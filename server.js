@@ -24,11 +24,18 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(__dirname));
 
 // Initialize Database
-const db = new sqlite3.Database('./alamin.db', (err) => {
+// Use persistent storage path on Railway, or local path for development
+const dbPath = process.env.DATABASE_PATH || process.env.RAILWAY_VOLUME_MOUNT_PATH 
+    ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/alamin.db` 
+    : './alamin.db';
+
+console.log('Database path:', dbPath);
+
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error opening database:', err);
     } else {
-        console.log('Connected to SQLite database');
+        console.log('Connected to SQLite database at:', dbPath);
         initializeDatabase();
     }
 });
