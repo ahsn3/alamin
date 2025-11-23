@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة عميل - نظام إدارة العملاء</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Navbar -->
+    <nav class="mobile-navbar">
+        <div class="mobile-navbar-header">
+            <div class="mobile-navbar-logo">
+                <img src="logo.JPG" alt="الأمين">
+                <h3>الأمين</h3>
+            </div>
+            <div class="mobile-navbar-user" id="mobileUserName">مرحبا</div>
+        </div>
+        <div class="mobile-navbar-nav">
+            <a href="dashboard.html" class="mobile-nav-link">لوحة التحكم</a>
+            <a href="clients.html" class="mobile-nav-link">العملاء</a>
+            <a href="insurance.html" class="mobile-nav-link">شركات التأمين</a>
+            <a href="#" class="mobile-nav-link" id="mobileLogoutBtn">تسجيل الخروج</a>
+        </div>
+    </nav>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.JPG" alt="الأمين" class="sidebar-logo">
+                <h2 class="company-name">الأمين</h2>
+                <p class="company-subtitle">للخدمات العامة والعقارت</p>
+            </div>
+            <div class="system-title">نظام إدارة العملاء</div>
+            <div class="welcome-message" id="welcomeMessage">مرحبا <span id="userName"></span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">لوحة التحكم</a>
+                <a href="clients.html" class="nav-link">العملاء</a>
+                <a href="insurance.html" class="nav-link">شركات التأمين</a>
+                <a href="#" class="nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="content-header">
+                <a href="clients.html" class="btn btn-secondary">رجوع إلى القائمة</a>
+                <h1 id="pageTitle">إضافة عميل جديد</h1>
+            </div>
+            <div class="section-card">
+                <form id="clientForm">
+                    <input type="hidden" id="clientId">
+                    <h2 style="margin-bottom: 25px; color: #1e3c72; font-size: 22px;">معلومات العميل</h2>
+                    <div class="form-group">
+                        <label for="fullName">الاسم الكامل *</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nationality">الجنسية *</label>
+                        <input type="text" id="nationality" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passport">رقم الجواز / TC *</label>
+                        <input type="text" id="passport" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">رقم الهاتف *</label>
+                        <input type="text" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">البريد الإلكتروني</label>
+                        <input type="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">العنوان</label>
+                        <input type="text" id="address">
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">ملاحظات</label>
+                        <textarea id="notes" rows="4"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="reminderDate">تاريخ التذكير للتواصل (اختياري)</label>
+                        <input type="datetime-local" id="reminderDate" step="60">
+                        <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                    </div>
+                    
+                    <div class="transaction-section" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e8e8e8;">
+                        <h2 style="margin-bottom: 15px; color: #1e3c72; font-size: 22px;">إضافة معاملة (اختياري)</h2>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                            يمكنك إضافة معاملة للعميل الآن أو إضافتها لاحقاً من صفحة تفاصيل العميل.
+                        </p>
+                        <div id="transactionFields">
+                            <div class="form-group">
+                                <label for="transactionType">نوع المعاملة</label>
+                                <select id="transactionType">
+                                    <option value="">اختر نوع المعاملة</option>
+                                    <option value="اقامة اول مرة">اقامة اول مرة</option>
+                                    <option value="اقامة انسانية">اقامة انسانية</option>
+                                    <option value="تجديد اقامة">تجديد اقامة</option>
+                                    <option value="تأشيرة">تأشيرة</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionStatus">حالة المعاملة</label>
+                                <select id="transactionStatus">
+                                    <option value="جديد">جديد</option>
+                                    <option value="قيد المعالجة">قيد المعالجة</option>
+                                    <option value="مكتمل">مكتمل</option>
+                                    <option value="ملغي">ملغي</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionNotes">ملاحظات المعاملة</label>
+                                <textarea id="transactionNotes" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="files-section" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e8e8e8;">
+                        <h2 style="margin-bottom: 15px; color: #1e3c72; font-size: 22px;">ملفات العميل</h2>
+                        <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                            قم برفع ملفات PDF أو صور متعلقة بالعميل (مثل جواز السفر، التأمين، المستندات الرسمية). يمكن رفع أكثر من ملف دفعة واحدة.
+                        </p>
+                        <div class="form-group">
+                            <label for="clientFiles">ملفات العميل (PDF) أو صور</label>
+                            <input type="file" id="clientFiles" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                            <div id="fileList" style="margin-top: 15px; color: #666; font-size: 14px;">لا توجد ملفات محددة</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 40px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='clients.html'">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ العميل</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="add-client.js"></script>
+</body>
+</html>
+

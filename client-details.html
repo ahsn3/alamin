@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل العميل - نظام إدارة العملاء</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Navbar -->
+    <nav class="mobile-navbar">
+        <div class="mobile-navbar-header">
+            <div class="mobile-navbar-logo">
+                <img src="logo.JPG" alt="الأمين">
+                <h3>الأمين</h3>
+            </div>
+            <div class="mobile-navbar-user" id="mobileUserName">مرحبا</div>
+        </div>
+        <div class="mobile-navbar-nav">
+            <a href="dashboard.html" class="mobile-nav-link">لوحة التحكم</a>
+            <a href="clients.html" class="mobile-nav-link">العملاء</a>
+            <a href="insurance.html" class="mobile-nav-link">شركات التأمين</a>
+            <a href="#" class="mobile-nav-link" id="mobileLogoutBtn">تسجيل الخروج</a>
+        </div>
+    </nav>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.JPG" alt="الأمين" class="sidebar-logo">
+                <h2 class="company-name">الأمين</h2>
+                <p class="company-subtitle">للخدمات العامة والعقارت</p>
+            </div>
+            <div class="system-title">نظام إدارة العملاء</div>
+            <div class="welcome-message" id="welcomeMessage">مرحبا <span id="userName"></span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">لوحة التحكم</a>
+                <a href="clients.html" class="nav-link">العملاء</a>
+                <a href="insurance.html" class="nav-link">شركات التأمين</a>
+                <a href="#" class="nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="content-header">
+                <h1>تفاصيل العميل</h1>
+                <div class="header-buttons">
+                    <a href="clients.html" class="btn btn-secondary">رجوع</a>
+                    <button class="btn btn-primary" id="editClientBtn">تعديل البيانات</button>
+                </div>
+            </div>
+            <div class="section-card" id="notesCard" style="display: none;">
+                <p id="clientNotes">-</p>
+            </div>
+            <div class="section-card" style="margin-top: 0;">
+                <h2>معلومات عامة</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>الاسم الكامل:</label>
+                        <span id="clientFullName">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>الجنسية:</label>
+                        <span id="clientNationality">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>البريد الإلكتروني:</label>
+                        <span id="clientEmail">غير متوفر</span>
+                    </div>
+                    <div class="info-item">
+                        <label>العنوان:</label>
+                        <span id="clientAddress">غير متوفر</span>
+                    </div>
+                    <div class="info-item">
+                        <label>رقم الجواز:</label>
+                        <span id="clientPassport">-</span>
+                    </div>
+                    <div class="info-item">
+                        <label>الهاتف:</label>
+                        <span id="clientPhone">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>التذكيرات</h2>
+                <div class="reminder-section">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="clientReminderDate">تاريخ التذكير للتواصل</label>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="datetime-local" id="clientReminderDate" class="form-input" style="flex: 1; min-width: 200px;">
+                            <button type="button" class="btn btn-primary" id="saveReminderBtn" onclick="handleSaveReminder(event)">حفظ التذكير</button>
+                            <button type="button" class="btn btn-secondary" id="clearReminderBtn" style="display: none;" onclick="handleClearReminder(event)">حذف التذكير</button>
+                        </div>
+                        <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                    </div>
+                    <div id="currentReminder" style="padding: 15px; background: #f8f9ff; border-radius: 8px; border-right: 4px solid #667eea;">
+                        <strong>التذكير الحالي:</strong> <span id="reminderDisplay">لا يوجد تذكير محدد</span>
+                    </div>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>المعاملات</h2>
+                <div class="transaction-actions">
+                    <button class="btn btn-primary" id="addTransactionBtn">إضافة معاملة</button>
+                    <button class="btn btn-primary" id="editTransactionBtn">تعديل المعاملة</button>
+                </div>
+                <div id="transactionsList">
+                    <!-- Transactions will be populated here -->
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>ملفات العميل</h2>
+                <input type="file" id="fileInput" multiple style="display: none;">
+                <button class="btn btn-secondary" onclick="document.getElementById('fileInput').click()">رفع ملف</button>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>اسم الملف</th>
+                            <th>نوع الملف</th>
+                            <th>تاريخ الرفع</th>
+                            <th>تنزيل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="filesTable">
+                        <!-- Files will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Modal for Add Transaction -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTransactionModal">&times;</span>
+            <h2>إضافة معاملة</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="modalTransactionType">نوع المعاملة *</label>
+                    <select id="modalTransactionType" required>
+                        <option value="">اختر نوع المعاملة</option>
+                        <option value="اقامة اول مرة">اقامة اول مرة</option>
+                        <option value="اقامة انسانية">اقامة انسانية</option>
+                        <option value="تجديد اقامة">تجديد اقامة</option>
+                        <option value="تأشيرة">تأشيرة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalTransactionStatus">حالة المعاملة *</label>
+                    <select id="modalTransactionStatus" required>
+                        <option value="جديد">جديد</option>
+                        <option value="قيد المعالجة">قيد المعالجة</option>
+                        <option value="مكتمل">مكتمل</option>
+                        <option value="ملغي">ملغي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalTransactionNotes">ملاحظات المعاملة</label>
+                    <textarea id="modalTransactionNotes" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelTransactionBtn">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="client-details.js"></script>
+</body>
+</html>
+

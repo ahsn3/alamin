@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة العملاء - نظام إدارة العملاء</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Navbar -->
+    <nav class="mobile-navbar">
+        <div class="mobile-navbar-header">
+            <div class="mobile-navbar-logo">
+                <img src="logo.JPG" alt="الأمين">
+                <h3>الأمين</h3>
+            </div>
+            <div class="mobile-navbar-user" id="mobileUserName">مرحبا</div>
+        </div>
+        <div class="mobile-navbar-nav">
+            <a href="dashboard.html" class="mobile-nav-link">لوحة التحكم</a>
+            <a href="clients.html" class="mobile-nav-link active">العملاء</a>
+            <a href="insurance.html" class="mobile-nav-link">شركات التأمين</a>
+            <a href="#" class="mobile-nav-link" id="mobileLogoutBtn">تسجيل الخروج</a>
+        </div>
+    </nav>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.JPG" alt="الأمين" class="sidebar-logo">
+                <h2 class="company-name">الأمين</h2>
+                <p class="company-subtitle">للخدمات العامة والعقارت</p>
+            </div>
+            <div class="system-title">نظام إدارة العملاء</div>
+            <div class="welcome-message" id="welcomeMessage">مرحبا <span id="userName"></span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">لوحة التحكم</a>
+                <a href="clients.html" class="nav-link active">العملاء</a>
+                <a href="insurance.html" class="nav-link">شركات التأمين</a>
+                <a href="#" class="nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="content-header">
+                <h1>إدارة العملاء</h1>
+                <a href="add-client.html" class="btn btn-primary">عميل جديد</a>
+            </div>
+            <div class="section-card">
+                <h2>فلترة العملاء</h2>
+                <div class="filter-form">
+                    <input type="text" id="searchInput" placeholder="بحث بالاسم أو رقم الجواز" class="form-input">
+                    <input type="text" id="nationalityFilter" placeholder="الجنسية" class="form-input">
+                    <button class="btn btn-primary" id="applyFiltersBtn">تطبيق الفلاتر</button>
+                </div>
+            </div>
+            <div class="section-card">
+                <h2>قائمة العملاء</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>الاسم الكامل</th>
+                            <th>الجنسية</th>
+                            <th>الهاتف</th>
+                            <th>ملاحظات</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clientsTable">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="clients.js"></script>
+</body>
+</html>
+

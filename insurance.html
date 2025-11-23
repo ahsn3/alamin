@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شركات التأمين - نظام إدارة العملاء</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Mobile Navbar -->
+    <nav class="mobile-navbar">
+        <div class="mobile-navbar-header">
+            <div class="mobile-navbar-logo">
+                <img src="logo.JPG" alt="الأمين">
+                <h3>الأمين</h3>
+            </div>
+            <div class="mobile-navbar-user" id="mobileUserName">مرحبا</div>
+        </div>
+        <div class="mobile-navbar-nav">
+            <a href="dashboard.html" class="mobile-nav-link">لوحة التحكم</a>
+            <a href="clients.html" class="mobile-nav-link">العملاء</a>
+            <a href="insurance.html" class="mobile-nav-link active">شركات التأمين</a>
+            <a href="#" class="mobile-nav-link" id="mobileLogoutBtn">تسجيل الخروج</a>
+        </div>
+    </nav>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.JPG" alt="الأمين" class="sidebar-logo">
+                <h2 class="company-name">الأمين</h2>
+                <p class="company-subtitle">للخدمات العامة والعقارت</p>
+            </div>
+            <div class="system-title">نظام إدارة العملاء</div>
+            <div class="welcome-message" id="welcomeMessage">مرحبا <span id="userName"></span></div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">لوحة التحكم</a>
+                <a href="clients.html" class="nav-link">العملاء</a>
+                <a href="insurance.html" class="nav-link active">شركات التأمين</a>
+                <a href="#" class="nav-link" id="logoutBtn">تسجيل الخروج</a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <div class="content-header">
+                <h1>شركات التأمين</h1>
+                <button class="btn btn-primary" id="addInsuranceBtn">إضافة شركة</button>
+            </div>
+            <div class="insurance-columns">
+                <div class="insurance-column">
+                    <h2>متوقفة</h2>
+                    <div id="inactiveCompanies">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="insurance-column">
+                    <h2>تحت التجربة</h2>
+                    <div id="trialCompanies">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="insurance-column">
+                    <h2>شركات نشطة</h2>
+                    <div id="activeCompanies">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Modal for Add/Edit Insurance Company -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">إضافة شركة تأمين</h2>
+            <form id="insuranceForm">
+                <input type="hidden" id="insuranceId">
+                <div class="form-group">
+                    <label for="insuranceName">اسم الشركة</label>
+                    <input type="text" id="insuranceName" required>
+                </div>
+                <div class="form-group">
+                    <label for="insurancePhone">الهاتف</label>
+                    <input type="text" id="insurancePhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="insuranceStatus">الحالة</label>
+                    <select id="insuranceStatus" required>
+                        <option value="active">نشطة</option>
+                        <option value="trial">تحت التجربة</option>
+                        <option value="inactive">متوقفة</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">حفظ</button>
+            </form>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
+    <script src="insurance.js"></script>
+</body>
+</html>
+

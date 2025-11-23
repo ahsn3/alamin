@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة إدارة عملاء الأمين</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-container">
+                <img src="logo.JPG" alt="الأمين" class="logo-image">
+                <h2 class="company-name">الأمين</h2>
+                <p class="company-subtitle">للخدمات العامة والعقارات</p>
+            </div>
+            <h1 class="platform-title">منصة إدارة عملاء الأمين</h1>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-login">تسجيل الدخول</button>
+            </form>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
+
