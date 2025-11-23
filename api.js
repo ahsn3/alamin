@@ -1,5 +1,8 @@
 // API Client and Socket.io for real-time updates
-const API_BASE = window.location.origin;
+// For Netlify deployment: Set this to your Railway backend URL
+// Example: const API_BASE = 'https://your-app.railway.app';
+// For local development: Leave as window.location.origin
+const API_BASE = window.API_BASE_URL || window.location.origin;
 let socket = null;
 
 // Initialize Socket.io connection

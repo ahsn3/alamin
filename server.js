@@ -102,10 +102,19 @@ function initializeDatabase() {
         name TEXT NOT NULL,
         phone TEXT,
         status TEXT,
+        due REAL DEFAULT 0,
+        paid REAL DEFAULT 0,
+        currency TEXT DEFAULT 'USD',
         createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
         lastUpdated TEXT DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         if (err) console.error('Error creating insurance_companies table:', err);
+        else {
+            // Add financial columns if they don't exist (for existing databases)
+            db.run(`ALTER TABLE insurance_companies ADD COLUMN due REAL DEFAULT 0`, () => {});
+            db.run(`ALTER TABLE insurance_companies ADD COLUMN paid REAL DEFAULT 0`, () => {});
+            db.run(`ALTER TABLE insurance_companies ADD COLUMN currency TEXT DEFAULT 'USD'`, () => {});
+        }
     });
 }
 
@@ -464,12 +473,12 @@ app.get('/api/insurance', (req, res) => {
 });
 
 app.post('/api/insurance', (req, res) => {
-    const { name, phone, status } = req.body;
+    const { name, phone, status, due, paid, currency } = req.body;
     const now = new Date().toISOString();
     
-    db.run(`INSERT INTO insurance_companies (name, phone, status, createdAt, lastUpdated)
-            VALUES (?, ?, ?, ?, ?)`,
-        [name, phone || '', status || 'نشط', now, now],
+    db.run(`INSERT INTO insurance_companies (name, phone, status, due, paid, currency, createdAt, lastUpdated)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, phone || '', status || 'active', due || 0, paid || 0, currency || 'USD', now, now],
         function(err) {
             if (err) {
                 return res.status(500).json({ error: 'Database error' });
@@ -481,12 +490,12 @@ app.post('/api/insurance', (req, res) => {
 });
 
 app.put('/api/insurance/:id', (req, res) => {
-    const { name, phone, status } = req.body;
+    const { name, phone, status, due, paid, currency } = req.body;
     const now = new Date().toISOString();
     
-    db.run(`UPDATE insurance_companies SET name = ?, phone = ?, status = ?, lastUpdated = ?
+    db.run(`UPDATE insurance_companies SET name = ?, phone = ?, status = ?, due = ?, paid = ?, currency = ?, lastUpdated = ?
             WHERE id = ?`,
-        [name, phone || '', status || 'نشط', now, req.params.id],
+        [name, phone || '', status || 'active', due || 0, paid || 0, currency || 'USD', now, req.params.id],
         (err) => {
             if (err) {
                 return res.status(500).json({ error: 'Database error' });

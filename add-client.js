@@ -123,10 +123,44 @@ const loadClientForEdit = async (clientId) => {
             const minutes = String(reminderDate.getMinutes()).padStart(2, '0');
             document.getElementById('reminderDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
         }
+        
+        // Show delete button when editing
+        const deleteBtn = document.getElementById('deleteClientBtn');
+        if (deleteBtn) {
+            deleteBtn.style.display = 'inline-block';
+        }
+        
+        // Update page title
+        const pageTitle = document.getElementById('pageTitle');
+        if (pageTitle) {
+            pageTitle.textContent = 'تعديل بيانات العميل';
+        }
     } catch (error) {
         console.error('Error loading client:', error);
         alert('حدث خطأ في تحميل بيانات العميل');
         window.location.href = 'clients.html';
+    }
+};
+
+window.deleteClient = async () => {
+    const clientId = document.getElementById('clientId').value;
+    
+    if (!clientId) {
+        alert('لا يمكن حذف عميل غير موجود');
+        return;
+    }
+    
+    if (!confirm('هل أنت متأكد من حذف هذا العميل؟ سيتم حذف جميع بياناته وملفاته ومعاملاته بشكل نهائي.')) {
+        return;
+    }
+    
+    try {
+        await api.deleteClient(parseInt(clientId));
+        alert('تم حذف العميل بنجاح');
+        window.location.href = 'clients.html';
+    } catch (error) {
+        console.error('Error deleting client:', error);
+        alert('حدث خطأ أثناء حذف العميل: ' + error.message);
     }
 };
 

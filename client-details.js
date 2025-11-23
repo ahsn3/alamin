@@ -725,10 +725,18 @@ const handleFileUpload = async (event, clientId) => {
         return;
     }
     
+    if (!clientId || isNaN(clientId)) {
+        alert('خطأ: معرف العميل غير صحيح');
+        console.error('Invalid clientId:', clientId);
+        return;
+    }
+    
     console.log('Files selected:', files.length);
     
     try {
-        const client = await api.getClient(clientId);
+        console.log('Fetching client with ID:', clientId);
+        const client = await api.getClient(parseInt(clientId));
+        console.log('Client fetched:', client);
         
         if (!client) {
             alert('العميل غير موجود');

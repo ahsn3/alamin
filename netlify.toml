@@ -1,0 +1,8 @@
+# Netlify configuration for frontend deployment
+[build]
+  publish = "."
+  command = "echo 'No build needed - static files'"
+
+# Note: API calls and Socket.io connections go directly to Railway backend
+# The API_BASE in api.js is configured to point to your Railway URL
+
