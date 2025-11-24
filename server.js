@@ -137,18 +137,25 @@ async function initializeUsers() {
         { username: 'Maram', password: 'Maram123', name: 'مرام', role: 'staff' }
     ];
 
+    console.log('Initializing default users...');
     for (const user of users) {
         try {
-            await query(
-                `INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) ON CONFLICT (username) DO NOTHING`,
+            const result = await query(
+                `INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password, name = EXCLUDED.name, role = EXCLUDED.role`,
                 [user.username, user.password, user.name, user.role]
             );
+            console.log(`User ${user.username} initialized`);
         } catch (err) {
-            if (!err.message.includes('duplicate key')) {
-                console.error('Error inserting user:', err);
-            }
+            console.error(`Error inserting user ${user.username}:`, err);
         }
     }
+    
+    // Verify users were created
+    const result = await query('SELECT username, name, role FROM users');
+    console.log(`Total users in database: ${result.rows.length}`);
+    result.rows.forEach(user => {
+        console.log(`  - ${user.username} (${user.name}) - ${user.role}`);
+    });
 }
 
 // Authentication endpoint
