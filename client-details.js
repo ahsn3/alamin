@@ -381,6 +381,27 @@ const loadClientDetails = async (clientId) => {
             phoneEl.textContent = (client.phone && client.phone.trim()) || '-';
             console.log('Set phone to:', phoneEl.textContent);
         }
+        
+        const clientStatusEl = document.getElementById('clientStatus');
+        if (clientStatusEl) {
+            const getStatusColor = (status) => {
+                const colors = {
+                    'مهتم': '#3498db',
+                    'تجديد': '#f39c12',
+                    'مخالف': '#e74c3c',
+                    'بانتظار الموعد': '#9b59b6',
+                    'مكتمل': '#27ae60'
+                };
+                return colors[status] || '#95a5a6';
+            };
+            if (client.clientStatus) {
+                const statusColor = getStatusColor(client.clientStatus);
+                clientStatusEl.innerHTML = `<span style="display: inline-block; padding: 4px 10px; background: ${statusColor}; color: white; border-radius: 15px; font-size: 12px; font-weight: 600;">${client.clientStatus}</span>`;
+            } else {
+                clientStatusEl.textContent = '-';
+            }
+        }
+        
         if (notesEl) {
             notesEl.textContent = (client.notes && client.notes.trim()) || '-';
             console.log('Set notes to:', notesEl.textContent);
