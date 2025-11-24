@@ -309,7 +309,7 @@ app.get('/api/clients', async (req, res) => {
             clientParams.push(username);
         }
         
-        clientQuery += ' ORDER BY "lastUpdated" DESC';
+        clientQuery += ' ORDER BY "createdAt" DESC';
         
         const clientsResult = await query(clientQuery, clientParams);
         const clients = clientsResult.rows;
