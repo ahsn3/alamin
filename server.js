@@ -244,16 +244,44 @@ app.post('/api/setup-users', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+        console.log('Login attempt:', { username, passwordLength: password?.length });
+        
+        // First, check if users table exists and has data
+        const tableCheck = await query(`
+            SELECT EXISTS (
+                SELECT FROM information_schema.tables 
+                WHERE table_name = 'users'
+            );
+        `);
+        console.log('Users table exists:', tableCheck.rows[0].exists);
+        
+        if (tableCheck.rows[0].exists) {
+            const allUsers = await query('SELECT username, name, role FROM users');
+            console.log('All users in database:', allUsers.rows);
+        }
+        
         const result = await query(
             'SELECT * FROM users WHERE LOWER(username) = LOWER($1) AND password = $2',
             [username, password]
         );
         
+        console.log('Login query result:', result.rows.length, 'users found');
+        
         if (result.rows.length === 0) {
+            // Try to find the user without password check for debugging
+            const userCheck = await query(
+                'SELECT username, name, role FROM users WHERE LOWER(username) = LOWER($1)',
+                [username]
+            );
+            if (userCheck.rows.length > 0) {
+                console.log('User exists but password mismatch. User:', userCheck.rows[0]);
+                console.log('Expected password:', userCheck.rows[0].username === 'Diaa' ? 'Diaa123' : userCheck.rows[0].username === 'Ahmed' ? 'Ahmed123' : 'Maram123');
+            }
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         
         const user = result.rows[0];
+        console.log('Login successful for:', user.username);
         res.json({
             username: user.username,
             name: user.name,
@@ -261,7 +289,7 @@ app.post('/api/login', async (req, res) => {
         });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: 'Database error', details: error.message });
     }
 });
 
