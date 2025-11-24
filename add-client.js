@@ -7,15 +7,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const clientId = urlParams.get('id');
     
-    // Set default reminder date to today at 12:00 PM
+    // Setup reminder toggle
+    const enableReminderCheckbox = document.getElementById('enableReminder');
+    const reminderDateContainer = document.getElementById('reminderDateContainer');
     const reminderDateInput = document.getElementById('reminderDate');
-    if (reminderDateInput && !reminderDateInput.value) {
-        const today = new Date();
-        today.setHours(12, 0, 0, 0);
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        reminderDateInput.value = `${year}-${month}-${day}T12:00`;
+    
+    if (enableReminderCheckbox && reminderDateContainer) {
+        enableReminderCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                reminderDateContainer.style.display = 'block';
+                // Set default date/time if not already set
+                if (reminderDateInput && !reminderDateInput.value) {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    reminderDateInput.value = `${year}-${month}-${day}T12:00`;
+                }
+            } else {
+                reminderDateContainer.style.display = 'none';
+                if (reminderDateInput) {
+                    reminderDateInput.value = '';
+                }
+            }
+        });
     }
     
     if (clientId) {
