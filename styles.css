@@ -21,6 +21,7 @@ body {
     align-items: center;
     position: relative;
     overflow: hidden;
+    padding: 20px;
 }
 
 
@@ -34,9 +35,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 10px;
     position: relative;
     z-index: 1;
+    max-height: 100vh;
+    overflow-y: auto;
 }
 
 .login-card {
