@@ -123,9 +123,9 @@ const loadReminders = async () => {
         clients.forEach(client => {
             if (client.reminderDate) {
                 const reminderDate = new Date(client.reminderDate);
-                // Show reminders for next 7 days
                 const daysUntil = Math.ceil((reminderDate - now) / (1000 * 60 * 60 * 24));
-                if (daysUntil >= 0 && daysUntil <= 7) {
+                // Show all upcoming reminders (not just within 7 days)
+                if (daysUntil >= 0) {
                     upcomingReminders.push({
                         client: client,
                         date: reminderDate,
@@ -144,8 +144,15 @@ const loadReminders = async () => {
         }
         
         remindersList.innerHTML = upcomingReminders.map(reminder => {
-            // Format date in Gregorian calendar (ميلادي)
-            const formattedDate = formatGregorianDate(reminder.date);
+            // Format date in compact format (DD/MM/YYYY HH:MM AM/PM)
+            const day = String(reminder.date.getDate()).padStart(2, '0');
+            const month = String(reminder.date.getMonth() + 1).padStart(2, '0');
+            const year = reminder.date.getFullYear();
+            const hours = reminder.date.getHours();
+            const minutes = String(reminder.date.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'م' : 'ص';
+            const displayHours = hours % 12 || 12;
+            const formattedDate = `${day}/${month}/${year} ${displayHours}:${minutes} ${ampm}`;
             
             let urgencyClass = '';
             let urgencyText = '';
@@ -160,14 +167,14 @@ const loadReminders = async () => {
             }
             
             return `
-                <div class="reminder-item ${urgencyClass}">
-                    <div class="reminder-content">
-                        <h3>${reminder.client.fullName}</h3>
-                        <p><strong>التاريخ:</strong> ${formattedDate}</p>
-                        <p><strong>الهاتف:</strong> ${reminder.client.phone}</p>
-                        <span class="reminder-badge">${urgencyText}</span>
+                <div class="reminder-item ${urgencyClass}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; margin-bottom: 10px;">
+                    <div style="flex: 1; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <span style="font-weight: 600; color: #2074b5; min-width: 150px;">${reminder.client.fullName}</span>
+                        <span style="color: #666; min-width: 180px;">📅 ${formattedDate}</span>
+                        <span style="color: #666; min-width: 120px;">📞 ${reminder.client.phone || '-'}</span>
+                        <span class="reminder-badge" style="margin: 0;">${urgencyText}</span>
                     </div>
-                    <a href="client-details.html?id=${reminder.client.id}" class="btn btn-primary" style="padding: 8px 16px;">عرض</a>
+                    <a href="client-details.html?id=${reminder.client.id}" class="btn btn-primary" style="padding: 6px 14px; white-space: nowrap;">عرض</a>
                 </div>
             `;
         }).join('');
