@@ -63,16 +63,47 @@ const loadLatestClients = async () => {
         
         if (!tableBody) return;
         
-        // Sort by ID descending to get latest
-        const latestClients = [...clients].sort((a, b) => b.id - a.id).slice(0, 4);
+        const currentUser = getCurrentUser();
+        const isManager = currentUser && currentUser.role === 'manager';
+        
+        // Show/hide "Added By" column header based on user role
+        const addedByHeader = document.getElementById('dashboardAddedByHeader');
+        if (addedByHeader) {
+            addedByHeader.style.display = isManager ? 'table-cell' : 'none';
+        }
+        
+        // Sort by creation date descending to get latest
+        const latestClients = [...clients].sort((a, b) => {
+            const dateA = new Date(a.createdAt || 0);
+            const dateB = new Date(b.createdAt || 0);
+            return dateB - dateA;
+        }).slice(0, 4);
+        
+        // Helper function to format reminder date
+        const formatReminderDate = (reminderDate) => {
+            if (!reminderDate) return 'لا يوجد موعد';
+            try {
+                const date = new Date(reminderDate);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'م' : 'ص';
+                const displayHours = hours % 12 || 12;
+                return `${day}/${month}/${year} ${displayHours}:${minutes} ${ampm}`;
+            } catch (e) {
+                return 'لا يوجد موعد';
+            }
+        };
         
         tableBody.innerHTML = latestClients.map(client => `
             <tr>
-                <td data-label="الاسم"><a href="client-details.html?id=${client.id}" style="color: #667eea; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${client.fullName}</a></td>
+                <td data-label="الاسم"><a href="client-details.html?id=${client.id}" style="color: #2074b5; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${client.fullName}</a></td>
                 <td data-label="الجنسية">${client.nationality}</td>
                 <td data-label="الهاتف">${client.phone}</td>
-                <td data-label="ملاحظات">${client.notes || '-'}</td>
-                <td data-label="أضيف بواسطة">${client.addedBy}</td>
+                <td data-label="تاريخ التواصل">${formatReminderDate(client.reminderDate)}</td>
+                ${isManager ? `<td data-label="أضيف بواسطة">${client.addedBy}</td>` : ''}
             </tr>
         `).join('');
     } catch (error) {

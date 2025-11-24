@@ -39,16 +39,46 @@ const loadClients = async (filteredClients = null) => {
             console.log('Clients loaded:', clients.length, clients);
         }
         
+        const currentUser = getCurrentUser();
+        const isManager = currentUser && currentUser.role === 'manager';
+        
+        // Show/hide "Added By" column header based on user role
+        const addedByHeader = document.getElementById('addedByHeader');
+        if (addedByHeader) {
+            addedByHeader.style.display = isManager ? 'table-cell' : 'none';
+        }
+        
         if (clients.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">لا توجد عملاء</td></tr>';
+            const colspan = isManager ? 7 : 6;
+            tableBody.innerHTML = `<tr><td colspan="${colspan}" style="text-align: center; padding: 20px;">لا توجد عملاء</td></tr>`;
             return;
         }
+        
+        // Helper function to format reminder date
+        const formatReminderDate = (reminderDate) => {
+            if (!reminderDate) return 'لا يوجد موعد';
+            try {
+                const date = new Date(reminderDate);
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = date.getHours();
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const ampm = hours >= 12 ? 'م' : 'ص';
+                const displayHours = hours % 12 || 12;
+                return `${day}/${month}/${year} ${displayHours}:${minutes} ${ampm}`;
+            } catch (e) {
+                return 'لا يوجد موعد';
+            }
+        };
         
         tableBody.innerHTML = clients.map(client => `
             <tr class="client-row" data-client-id="${client.id}" style="cursor: pointer;">
                 <td data-label="الاسم"><a href="client-details.html?id=${client.id}" style="color: #2074b5; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${client.fullName || '-'}</a></td>
                 <td data-label="الجنسية">${client.nationality || '-'}</td>
                 <td data-label="الهاتف">${client.phone || '-'}</td>
+                <td data-label="تاريخ التواصل">${formatReminderDate(client.reminderDate)}</td>
+                ${isManager ? `<td data-label="أضيف بواسطة">${client.addedBy || '-'}</td>` : ''}
                 <td data-label="ملاحظات">${client.notes || '-'}</td>
                 <td data-label="الإجراءات" onclick="event.stopPropagation();" style="display: flex; gap: 8px; align-items: center; justify-content: flex-start;">
                     <a href="client-details.html?id=${client.id}" class="btn btn-primary" style="padding: 8px 16px;">عرض</a>
