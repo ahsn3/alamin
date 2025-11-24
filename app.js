@@ -296,6 +296,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             mobileUserName.textContent = `مرحبا ${currentUser.name}`;
         }
         
+        // Hamburger menu toggle
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        
+        if (hamburgerMenu && mobileNavMenu) {
+            hamburgerMenu.addEventListener('click', () => {
+                hamburgerMenu.classList.toggle('active');
+                mobileNavMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking on a link
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburgerMenu.classList.remove('active');
+                    mobileNavMenu.classList.remove('active');
+                });
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileNavbar.contains(e.target) && mobileNavMenu.classList.contains('active')) {
+                    hamburgerMenu.classList.remove('active');
+                    mobileNavMenu.classList.remove('active');
+                }
+            });
+        }
+        
         // Mobile logout button
         const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
         if (mobileLogoutBtn) {

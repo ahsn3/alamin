@@ -1078,7 +1078,41 @@ input[type="file"]::file-selector-button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+}
+
+/* Hamburger Menu Button */
+.hamburger-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 30px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.hamburger-menu span {
+    width: 100%;
+    height: 3px;
+    background: white;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.hamburger-menu.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger-menu.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
 }
 
 .mobile-navbar-logo {
@@ -1107,12 +1141,21 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .mobile-navbar-nav {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.mobile-navbar-nav.active {
     display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    max-height: 500px;
+    padding-top: 15px;
 }
 
 .mobile-navbar-nav::-webkit-scrollbar {
@@ -1120,16 +1163,18 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .mobile-nav-link {
-    padding: 10px 16px;
+    padding: 12px 16px;
     background: rgba(255, 255, 255, 0.15);
     color: white;
     text-decoration: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: 16px;
     white-space: nowrap;
     transition: all 0.3s ease;
     font-weight: 500;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: right;
+    display: block;
 }
 
 .mobile-nav-link:hover,
