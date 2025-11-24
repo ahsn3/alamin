@@ -29,8 +29,11 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // Railway automatically provides DATABASE_URL environment variable
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('railway') ? { rejectUnauthorized: false } : false
 });
+
+console.log('DATABASE_URL set:', !!process.env.DATABASE_URL);
+console.log('DATABASE_URL starts with:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 20) + '...' : 'NOT SET');
 
 // Test connection
 pool.query('SELECT NOW()', (err, res) => {
