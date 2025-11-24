@@ -170,7 +170,7 @@ const loadReminders = async () => {
                 <div class="reminder-item ${urgencyClass}" style="display: flex; align-items: center; gap: 15px; padding: 12px 20px; margin-bottom: 10px;">
                     <div style="flex: 1; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
                         <span style="font-weight: 600; color: #2074b5; min-width: 150px;">${reminder.client.fullName}</span>
-                        <span style="color: #666; min-width: 180px;">📅 ${formattedDate}</span>
+                        <span style="color: #666; min-width: 180px;">${formattedDate}</span>
                         <span style="color: #666; min-width: 120px;">📞 ${reminder.client.phone || '-'}</span>
                         <span class="reminder-badge" style="margin: 0;">${urgencyText}</span>
                     </div>
