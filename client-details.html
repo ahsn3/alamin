@@ -82,17 +82,33 @@
             <div class="section-card">
                 <h2>التذكيرات</h2>
                 <div class="reminder-section">
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label for="clientReminderDate">تاريخ التذكير للتواصل</label>
-                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <input type="datetime-local" id="clientReminderDate" class="form-input" style="flex: 1; min-width: 200px;">
-                            <button type="button" class="btn btn-primary" id="saveReminderBtn" onclick="handleSaveReminder(event)">حفظ التذكير</button>
-                            <button type="button" class="btn btn-secondary" id="clearReminderBtn" style="display: none;" onclick="handleClearReminder(event)">حذف التذكير</button>
-                        </div>
-                        <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
-                    </div>
-                    <div id="currentReminder" style="padding: 15px; background: #f8f9ff; border-radius: 8px; border-right: 4px solid #667eea;">
+                    <div id="currentReminder" style="padding: 15px; background: #f8f9ff; border-radius: 8px; border-right: 4px solid #2074b5; margin-bottom: 20px;">
                         <strong>التذكير الحالي:</strong> <span id="reminderDisplay">لا يوجد تذكير محدد</span>
+                    </div>
+                    <div id="addReminderSection" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="clientReminderDate">تاريخ التذكير للتواصل</label>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="datetime-local" id="clientReminderDate" class="form-input" style="flex: 1; min-width: 200px;">
+                                <button type="button" class="btn btn-primary" id="saveReminderBtn" onclick="handleSaveReminder(event)">حفظ التذكير</button>
+                                <button type="button" class="btn btn-secondary" id="cancelReminderBtn" onclick="cancelAddReminder()">إلغاء</button>
+                            </div>
+                            <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                        </div>
+                    </div>
+                    <div id="editReminderSection" style="display: none;">
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label for="clientReminderDate">تاريخ التذكير للتواصل</label>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="datetime-local" id="clientReminderDate" class="form-input" style="flex: 1; min-width: 200px;">
+                                <button type="button" class="btn btn-primary" id="saveReminderBtn" onclick="handleSaveReminder(event)">حفظ التذكير</button>
+                                <button type="button" class="btn btn-secondary" id="clearReminderBtn" onclick="handleClearReminder(event)">حذف التذكير</button>
+                            </div>
+                            <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                        </div>
+                    </div>
+                    <div id="noReminderSection">
+                        <button type="button" class="btn btn-primary" id="addReminderBtn" onclick="showAddReminder()">إضافة تذكير</button>
                     </div>
                 </div>
             </div>

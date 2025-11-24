@@ -108,6 +108,12 @@ const saveReminder = async (clientId) => {
         return false;
     }
 };
+    } catch (error) {
+        console.error('Error saving reminder:', error);
+        alert('حدث خطأ أثناء حفظ التذكير: ' + error.message);
+        return false;
+    }
+};
 
 const clearReminder = async (clientId) => {
     if (!confirm('هل أنت متأكد من حذف التذكير؟')) return;
@@ -854,39 +860,72 @@ const formatGregorianDate = (date) => {
 const loadReminder = (client) => {
     const reminderDateInput = document.getElementById('clientReminderDate');
     const reminderDisplay = document.getElementById('reminderDisplay');
-    const clearReminderBtn = document.getElementById('clearReminderBtn');
+    const addReminderSection = document.getElementById('addReminderSection');
+    const editReminderSection = document.getElementById('editReminderSection');
+    const noReminderSection = document.getElementById('noReminderSection');
     
-    if (!reminderDateInput || !reminderDisplay) return;
+    if (!reminderDisplay) return;
     
     if (client.reminderDate) {
+        // Client has a reminder - show it and allow editing
         const reminderDate = new Date(client.reminderDate);
-        // Format in Gregorian calendar (ميلادي)
         const formattedDate = formatGregorianDate(reminderDate);
         reminderDisplay.textContent = formattedDate;
         
-        // Set input value for datetime-local (YYYY-MM-DDTHH:mm format)
-        const yearISO = reminderDate.getFullYear();
-        const monthISO = String(reminderDate.getMonth() + 1).padStart(2, '0');
-        const dayISO = String(reminderDate.getDate()).padStart(2, '0');
-        const hoursISO = String(reminderDate.getHours()).padStart(2, '0');
-        const minutesISO = String(reminderDate.getMinutes()).padStart(2, '0');
-        reminderDateInput.value = `${yearISO}-${monthISO}-${dayISO}T${hoursISO}:${minutesISO}`;
+        // Show edit section, hide add section
+        if (editReminderSection) editReminderSection.style.display = 'block';
+        if (addReminderSection) addReminderSection.style.display = 'none';
+        if (noReminderSection) noReminderSection.style.display = 'none';
         
-        if (clearReminderBtn) clearReminderBtn.style.display = 'inline-block';
+        // Set input value for datetime-local
+        if (reminderDateInput) {
+            const yearISO = reminderDate.getFullYear();
+            const monthISO = String(reminderDate.getMonth() + 1).padStart(2, '0');
+            const dayISO = String(reminderDate.getDate()).padStart(2, '0');
+            const hoursISO = String(reminderDate.getHours()).padStart(2, '0');
+            const minutesISO = String(reminderDate.getMinutes()).padStart(2, '0');
+            reminderDateInput.value = `${yearISO}-${monthISO}-${dayISO}T${hoursISO}:${minutesISO}`;
+        }
     } else {
-        // Set default to today at 12:00 PM
-        const today = new Date();
-        today.setHours(12, 0, 0, 0);
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
-        reminderDateInput.value = `${year}-${month}-${day}T12:00`;
+        // No reminder - show "no reminder" message and "Add reminder" button
+        reminderDisplay.textContent = 'لا يوجد تذكير محدد';
         
-        // Display in DD/MM/YYYY format
-        const formattedDefault = `${day}/${month}/${year} 12:00 PM`;
-        reminderDisplay.textContent = `التاريخ الافتراضي: ${formattedDefault}`;
-        if (clearReminderBtn) clearReminderBtn.style.display = 'none';
+        // Show add section, hide edit section
+        if (noReminderSection) noReminderSection.style.display = 'block';
+        if (addReminderSection) addReminderSection.style.display = 'none';
+        if (editReminderSection) editReminderSection.style.display = 'none';
+        
+        // Clear input
+        if (reminderDateInput) reminderDateInput.value = '';
     }
+};
+
+window.showAddReminder = function() {
+    const addReminderSection = document.getElementById('addReminderSection');
+    const noReminderSection = document.getElementById('noReminderSection');
+    const reminderDateInput = document.getElementById('clientReminderDate');
+    
+    if (addReminderSection) addReminderSection.style.display = 'block';
+    if (noReminderSection) noReminderSection.style.display = 'none';
+    
+    // Set default date/time if not set
+    if (reminderDateInput && !reminderDateInput.value) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        reminderDateInput.value = `${year}-${month}-${day}T12:00`;
+    }
+};
+
+window.cancelAddReminder = function() {
+    const addReminderSection = document.getElementById('addReminderSection');
+    const noReminderSection = document.getElementById('noReminderSection');
+    const reminderDateInput = document.getElementById('clientReminderDate');
+    
+    if (addReminderSection) addReminderSection.style.display = 'none';
+    if (noReminderSection) noReminderSection.style.display = 'block';
+    if (reminderDateInput) reminderDateInput.value = '';
 };
 
 window.downloadFile = (fileName, fileId) => {
