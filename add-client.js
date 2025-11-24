@@ -113,7 +113,19 @@ const loadClientForEdit = async (clientId) => {
         document.getElementById('notes').value = client.notes || '';
         
         // Load reminder date if exists
+        const enableReminderCheckbox = document.getElementById('enableReminder');
+        const reminderDateContainer = document.getElementById('reminderDateContainer');
+        const reminderDateInput = document.getElementById('reminderDate');
+        
         if (client.reminderDate) {
+            // Enable reminder checkbox and show date container
+            if (enableReminderCheckbox) {
+                enableReminderCheckbox.checked = true;
+            }
+            if (reminderDateContainer) {
+                reminderDateContainer.style.display = 'block';
+            }
+            
             // Convert ISO date to datetime-local format
             const reminderDate = new Date(client.reminderDate);
             const year = reminderDate.getFullYear();
@@ -121,7 +133,20 @@ const loadClientForEdit = async (clientId) => {
             const day = String(reminderDate.getDate()).padStart(2, '0');
             const hours = String(reminderDate.getHours()).padStart(2, '0');
             const minutes = String(reminderDate.getMinutes()).padStart(2, '0');
-            document.getElementById('reminderDate').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            if (reminderDateInput) {
+                reminderDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+            }
+        } else {
+            // No reminder, uncheck and hide
+            if (enableReminderCheckbox) {
+                enableReminderCheckbox.checked = false;
+            }
+            if (reminderDateContainer) {
+                reminderDateContainer.style.display = 'none';
+            }
+            if (reminderDateInput) {
+                reminderDateInput.value = '';
+            }
         }
         
         // Show delete button when editing
@@ -209,20 +234,34 @@ const saveClient = async (clientId) => {
     
     console.log('Client data to save:', clientData);
     
-    // Handle reminder date
+    // Handle reminder date (only if enabled)
+    const enableReminderCheckbox = document.getElementById('enableReminder');
     const reminderDateInput = document.getElementById('reminderDate');
-    if (reminderDateInput && reminderDateInput.value) {
+    
+    if (enableReminderCheckbox && enableReminderCheckbox.checked && reminderDateInput && reminderDateInput.value) {
         clientData.reminderDate = new Date(reminderDateInput.value).toISOString();
     } else if (clientId) {
-        // Preserve existing reminder when editing
+        // Preserve existing reminder when editing (if it exists)
         try {
             const existingClient = await api.getClient(parseInt(clientId));
             if (existingClient && existingClient.reminderDate) {
-                clientData.reminderDate = existingClient.reminderDate;
+                // Only keep existing reminder if checkbox is checked
+                if (enableReminderCheckbox && enableReminderCheckbox.checked) {
+                    clientData.reminderDate = existingClient.reminderDate;
+                } else {
+                    // Clear reminder if checkbox is unchecked
+                    clientData.reminderDate = null;
+                }
+            } else {
+                clientData.reminderDate = null;
             }
         } catch (e) {
             console.error('Error fetching existing client:', e);
+            clientData.reminderDate = null;
         }
+    } else {
+        // New client without reminder checkbox checked
+        clientData.reminderDate = null;
     }
     
     // Handle transactions

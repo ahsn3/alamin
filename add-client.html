@@ -77,9 +77,15 @@
                         <textarea id="notes" rows="4"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="reminderDate">تاريخ التذكير للتواصل (اختياري)</label>
-                        <input type="datetime-local" id="reminderDate" step="60">
-                        <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                            <input type="checkbox" id="enableReminder" style="width: 20px; height: 20px; cursor: pointer;">
+                            <span>إضافة تذكير للتواصل مع العميل</span>
+                        </label>
+                        <div id="reminderDateContainer" style="display: none; margin-top: 15px;">
+                            <label for="reminderDate">تاريخ ووقت التذكير</label>
+                            <input type="datetime-local" id="reminderDate" step="60">
+                            <small style="color: #666; font-size: 12px; display: block; margin-top: 5px;">سيتم إرسال إشعار عند حلول هذا التاريخ</small>
+                        </div>
                     </div>
                     
                     <div class="transaction-section" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e8e8e8;">
