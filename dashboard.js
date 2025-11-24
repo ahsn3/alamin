@@ -97,15 +97,33 @@ const loadLatestClients = async () => {
             }
         };
         
-        tableBody.innerHTML = latestClients.map(client => `
+        // Helper function to get status color
+        const getStatusColor = (status) => {
+            const colors = {
+                'مهتم': '#3498db',
+                'تجديد': '#f39c12',
+                'مخالف': '#e74c3c',
+                'بانتظار الموعد': '#9b59b6',
+                'مكتمل': '#27ae60'
+            };
+            return colors[status] || '#95a5a6';
+        };
+        
+        tableBody.innerHTML = latestClients.map(client => {
+            const statusBadge = client.clientStatus ? 
+                `<span style="display: inline-block; padding: 4px 10px; background: ${getStatusColor(client.clientStatus)}; color: white; border-radius: 15px; font-size: 12px; font-weight: 600;">${client.clientStatus}</span>` : 
+                '-';
+            return `
             <tr>
                 <td data-label="الاسم"><a href="client-details.html?id=${client.id}" style="color: #2074b5; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${client.fullName}</a></td>
                 <td data-label="الجنسية">${client.nationality}</td>
                 <td data-label="الهاتف">${client.phone}</td>
+                <td data-label="حالة العميل">${statusBadge}</td>
                 <td data-label="تاريخ التواصل">${formatReminderDate(client.reminderDate)}</td>
                 ${isManager ? `<td data-label="أضيف بواسطة">${client.addedBy}</td>` : ''}
             </tr>
-        `).join('');
+        `;
+        }).join('');
     } catch (error) {
         console.error('Error loading latest clients:', error);
     }

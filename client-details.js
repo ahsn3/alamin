@@ -192,13 +192,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (event.target === transactionModal) {
             transactionModal.style.display = 'none';
         }
+        const editTransactionModal = document.getElementById('editTransactionModal');
+        if (editTransactionModal && event.target === editTransactionModal) {
+            editTransactionModal.style.display = 'none';
+        }
     };
+    
+    // Setup edit transaction modal
+    const editTransactionModal = document.getElementById('editTransactionModal');
+    const closeEditTransactionModal = document.getElementById('closeEditTransactionModal');
+    const cancelEditTransactionBtn = document.getElementById('cancelEditTransactionBtn');
+    const editTransactionForm = document.getElementById('editTransactionForm');
+    
+    if (closeEditTransactionModal) {
+        closeEditTransactionModal.addEventListener('click', () => {
+            editTransactionModal.style.display = 'none';
+        });
+    }
+    
+    if (cancelEditTransactionBtn) {
+        cancelEditTransactionBtn.addEventListener('click', () => {
+            editTransactionModal.style.display = 'none';
+        });
+    }
+    
+    if (editTransactionForm) {
+        editTransactionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await saveEditTransaction(clientId);
+        });
+    }
     
     const editTransactionBtn = document.getElementById('editTransactionBtn');
     if (editTransactionBtn) {
-        editTransactionBtn.addEventListener('click', () => {
-            editTransaction(clientId);
-        });
+        editTransactionBtn.style.display = 'none'; // Hide the old edit button
     }
     
     const fileInput = document.getElementById('fileInput');
@@ -316,6 +343,7 @@ const loadClientDetails = async (clientId) => {
         const addressEl = document.getElementById('clientAddress');
         const passportEl = document.getElementById('clientPassport');
         const phoneEl = document.getElementById('clientPhone');
+        const clientStatusEl = document.getElementById('clientStatus');
         const notesEl = document.getElementById('clientNotes');
         
         console.log('Elements found:', {
@@ -325,6 +353,7 @@ const loadClientDetails = async (clientId) => {
             addressEl: !!addressEl,
             passportEl: !!passportEl,
             phoneEl: !!phoneEl,
+            clientStatusEl: !!clientStatusEl,
             notesEl: !!notesEl
         });
         
@@ -390,7 +419,10 @@ const loadTransactions = (client) => {
             <div class="transaction-item">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3>${transaction.type}</h3>
-                    ${statusBadge}
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        ${statusBadge}
+                        <button class="btn btn-secondary" style="padding: 5px 12px; font-size: 12px;" onclick="openEditTransactionModal(${client.id}, ${transaction.id})">تعديل المعاملة</button>
+                    </div>
                 </div>
                 ${appointmentText ? `<p>${appointmentText}</p>` : ''}
                 ${notesText}
@@ -581,41 +613,95 @@ const saveTransactionFromModal = async (clientId) => {
     }
 };
 
-const editTransaction = async (clientId) => {
+window.openEditTransactionModal = async (clientId, transactionId) => {
     try {
         const client = await api.getClient(clientId);
+        const transaction = client.transactions.find(t => t.id === transactionId);
         
-        if (!client || !client.transactions || client.transactions.length === 0) {
-            alert('لا توجد معاملات للتعديل');
+        if (!transaction) {
+            alert('المعاملة غير موجودة');
             return;
         }
         
-        const transactionId = prompt('أدخل رقم المعاملة (أول معاملة = 1):');
-        const transactionIndex = parseInt(transactionId) - 1;
+        // Populate edit transaction modal
+        document.getElementById('editTransactionId').value = transactionId;
+        document.getElementById('editTransactionType').value = transaction.type || '';
+        document.getElementById('editTransactionStatus').value = transaction.status || '';
+        document.getElementById('editTransactionDate').value = transaction.appointmentDate || '';
+        document.getElementById('editTransactionNotes').value = transaction.notes || '';
         
-        if (transactionIndex < 0 || transactionIndex >= client.transactions.length) {
-            alert('رقم المعاملة غير صحيح');
+        // Store clientId in modal for save function
+        const editModal = document.getElementById('editTransactionModal');
+        if (editModal) {
+            editModal.setAttribute('data-client-id', clientId);
+        }
+        
+        // Show modal
+        editModal.style.display = 'block';
+    } catch (error) {
+        console.error('Error opening edit transaction modal:', error);
+        alert('حدث خطأ أثناء فتح نموذج التعديل: ' + error.message);
+    }
+};
+
+const saveEditTransaction = async (clientId) => {
+    const transactionId = parseInt(document.getElementById('editTransactionId').value);
+    const transactionType = document.getElementById('editTransactionType').value;
+    const transactionStatus = document.getElementById('editTransactionStatus').value;
+    const transactionDate = document.getElementById('editTransactionDate').value;
+    const transactionNotes = document.getElementById('editTransactionNotes').value;
+    
+    if (!transactionType || !transactionStatus) {
+        alert('يرجى ملء جميع الحقول المطلوبة');
+        return;
+    }
+    
+    try {
+        const client = await api.getClient(clientId);
+        if (!client) {
+            alert('العميل غير موجود');
             return;
         }
         
-        const transaction = client.transactions[transactionIndex];
-        const newType = prompt('نوع المعاملة الجديد:', transaction.type);
-        if (newType) transaction.type = newType;
+        // Find and update the transaction
+        const transactionIndex = client.transactions.findIndex(t => t.id === transactionId);
+        if (transactionIndex === -1) {
+            alert('المعاملة غير موجودة');
+            return;
+        }
         
-        const newDate = prompt('تاريخ الموعد الجديد:', transaction.appointmentDate);
-        if (newDate) transaction.appointmentDate = newDate;
+        // Update transaction
+        client.transactions[transactionIndex] = {
+            ...client.transactions[transactionIndex],
+            type: transactionType,
+            status: transactionStatus,
+            appointmentDate: transactionDate,
+            notes: transactionNotes
+        };
         
-        // Update via API
+        // Update client via API
         await api.updateClient(clientId, {
             ...client,
             transactions: client.transactions
         });
         
+        // Close modal
+        document.getElementById('editTransactionModal').style.display = 'none';
+        
+        // Reload client details
         await loadClientDetails(clientId);
+        
+        alert('تم تحديث المعاملة بنجاح');
     } catch (error) {
-        console.error('Error editing transaction:', error);
-        alert('حدث خطأ أثناء تعديل المعاملة: ' + error.message);
+        console.error('Error saving edited transaction:', error);
+        alert('حدث خطأ أثناء حفظ التعديلات: ' + error.message);
     }
+};
+
+const editTransaction = async (clientId) => {
+    // This function is kept for backward compatibility but now shows a message
+    // Users should click "تعديل المعاملة" button on each transaction instead
+    alert('يرجى النقر على زر "تعديل المعاملة" بجانب المعاملة التي تريد تعديلها');
 };
 
 window.showEditFinancial = (type, clientId, transactionId) => {

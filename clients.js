@@ -49,10 +49,22 @@ const loadClients = async (filteredClients = null) => {
         }
         
         if (clients.length === 0) {
-            const colspan = isManager ? 7 : 6;
+            const colspan = isManager ? 8 : 7;
             tableBody.innerHTML = `<tr><td colspan="${colspan}" style="text-align: center; padding: 20px;">لا توجد عملاء</td></tr>`;
             return;
         }
+        
+        // Helper function to get status color
+        const getStatusColor = (status) => {
+            const colors = {
+                'مهتم': '#3498db',
+                'تجديد': '#f39c12',
+                'مخالف': '#e74c3c',
+                'بانتظار الموعد': '#9b59b6',
+                'مكتمل': '#27ae60'
+            };
+            return colors[status] || '#95a5a6';
+        };
         
         // Helper function to format reminder date
         const formatReminderDate = (reminderDate) => {
@@ -72,11 +84,16 @@ const loadClients = async (filteredClients = null) => {
             }
         };
         
-        tableBody.innerHTML = clients.map(client => `
+        tableBody.innerHTML = clients.map(client => {
+            const statusBadge = client.clientStatus ? 
+                `<span style="display: inline-block; padding: 4px 10px; background: ${getStatusColor(client.clientStatus)}; color: white; border-radius: 15px; font-size: 12px; font-weight: 600;">${client.clientStatus}</span>` : 
+                '-';
+            return `
             <tr class="client-row" data-client-id="${client.id}" style="cursor: pointer;">
                 <td data-label="الاسم"><a href="client-details.html?id=${client.id}" style="color: #2074b5; text-decoration: none; font-weight: 600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${client.fullName || '-'}</a></td>
                 <td data-label="الجنسية">${client.nationality || '-'}</td>
                 <td data-label="الهاتف">${client.phone || '-'}</td>
+                <td data-label="حالة العميل">${statusBadge}</td>
                 <td data-label="تاريخ التواصل">${formatReminderDate(client.reminderDate)}</td>
                 ${isManager ? `<td data-label="أضيف بواسطة">${client.addedBy || '-'}</td>` : ''}
                 <td data-label="ملاحظات">${client.notes || '-'}</td>
@@ -85,7 +102,8 @@ const loadClients = async (filteredClients = null) => {
                     <a href="add-client.html?id=${client.id}" class="btn btn-secondary" style="padding: 8px 16px;">تعديل</a>
                 </td>
             </tr>
-        `).join('');
+        `;
+        }).join('');
         
         // Add click event listeners to rows
         const rows = document.querySelectorAll('.client-row');

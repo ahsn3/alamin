@@ -125,6 +125,10 @@ const loadClientForEdit = async (clientId) => {
         document.getElementById('phone').value = client.phone || '';
         document.getElementById('email').value = client.email || '';
         document.getElementById('address').value = client.address || '';
+        const clientStatusEl = document.getElementById('clientStatus');
+        if (clientStatusEl) {
+            clientStatusEl.value = client.clientStatus || '';
+        }
         document.getElementById('notes').value = client.notes || '';
         
         // Load reminder date if exists
@@ -223,6 +227,7 @@ const saveClient = async (clientId) => {
     const phoneEl = document.getElementById('phone');
     const emailEl = document.getElementById('email');
     const addressEl = document.getElementById('address');
+    const clientStatusEl = document.getElementById('clientStatus');
     const notesEl = document.getElementById('notes');
     
     if (!fullNameEl || !nationalityEl || !passportEl || !phoneEl) {
@@ -238,6 +243,7 @@ const saveClient = async (clientId) => {
         phone: phoneEl.value.trim(),
         email: emailEl ? emailEl.value.trim() : '',
         address: addressEl ? addressEl.value.trim() : '',
+        clientStatus: clientStatusEl ? clientStatusEl.value : '',
         notes: notesEl ? notesEl.value.trim() : ''
     };
     
@@ -333,6 +339,7 @@ const saveClient = async (clientId) => {
                 phone: clientData.phone,
                 email: clientData.email || '',
                 address: clientData.address || '',
+                clientStatus: clientData.clientStatus || '',
                 notes: clientData.notes || '',
                 reminderDate: clientData.reminderDate || null,
                 files: existingFiles,
@@ -362,6 +369,7 @@ const saveClient = async (clientId) => {
                 phone: clientData.phone,
                 email: clientData.email || '',
                 address: clientData.address || '',
+                clientStatus: clientData.clientStatus || '',
                 notes: clientData.notes || '',
                 addedBy: currentUser.username,
                 transactions: transactions || [],

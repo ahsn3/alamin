@@ -185,6 +185,48 @@
         </div>
     </div>
     
+    <!-- Modal for Edit Transaction -->
+    <div id="editTransactionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeEditTransactionModal">&times;</span>
+            <h2>تعديل المعاملة</h2>
+            <form id="editTransactionForm">
+                <input type="hidden" id="editTransactionId">
+                <div class="form-group">
+                    <label for="editTransactionType">نوع المعاملة *</label>
+                    <select id="editTransactionType" required>
+                        <option value="">اختر نوع المعاملة</option>
+                        <option value="اقامة اول مرة">اقامة اول مرة</option>
+                        <option value="اقامة انسانية">اقامة انسانية</option>
+                        <option value="تجديد اقامة">تجديد اقامة</option>
+                        <option value="تأشيرة">تأشيرة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editTransactionStatus">حالة المعاملة *</label>
+                    <select id="editTransactionStatus" required>
+                        <option value="جديد">جديد</option>
+                        <option value="قيد المعالجة">قيد المعالجة</option>
+                        <option value="مكتمل">مكتمل</option>
+                        <option value="ملغي">ملغي</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editTransactionDate">تاريخ الموعد</label>
+                    <input type="text" id="editTransactionDate" placeholder="مثال: 15/12/2025">
+                </div>
+                <div class="form-group">
+                    <label for="editTransactionNotes">ملاحظات المعاملة</label>
+                    <textarea id="editTransactionNotes" rows="3"></textarea>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="cancelEditTransactionBtn">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src="api.js"></script>
     <script src="app.js"></script>

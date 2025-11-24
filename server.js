@@ -74,10 +74,18 @@ async function initializeDatabase() {
             address TEXT,
             notes TEXT,
             "addedBy" VARCHAR(255) NOT NULL,
+            "clientStatus" VARCHAR(50),
             "reminderDate" TIMESTAMP,
             "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             "lastUpdated" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`);
+        
+        // Add clientStatus column if it doesn't exist (for existing databases)
+        try {
+            await query(`ALTER TABLE clients ADD COLUMN IF NOT EXISTS "clientStatus" VARCHAR(50)`);
+        } catch (e) {
+            // Column might already exist, ignore
+        }
 
         // Transactions table
         await query(`CREATE TABLE IF NOT EXISTS transactions (
@@ -381,6 +389,7 @@ app.get('/api/clients', async (req, res) => {
             address: client.address,
             notes: client.notes,
             addedBy: client.addedBy,
+            clientStatus: client.clientStatus || '',
             reminderDate: client.reminderDate,
             createdAt: client.createdAt,
             lastUpdated: client.lastUpdated,
@@ -425,6 +434,7 @@ app.get('/api/clients/:id', async (req, res) => {
         
         const clientData = {
             ...client,
+            clientStatus: client.clientStatus || '',
             transactions: transactionsResult.rows.map(t => ({
                 id: t.id,
                 type: t.type,
@@ -474,11 +484,11 @@ app.post('/api/clients', async (req, res) => {
         const clientId = client.id || Date.now();
         
         await query(
-            `INSERT INTO clients (id, "fullName", nationality, passport, phone, email, address, notes, "addedBy", "reminderDate", "createdAt", "lastUpdated")
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+            `INSERT INTO clients (id, "fullName", nationality, passport, phone, email, address, notes, "addedBy", "clientStatus", "reminderDate", "createdAt", "lastUpdated")
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
             [clientId, client.fullName, client.nationality, client.passport, 
              client.phone, client.email || '', client.address || '', client.notes || '', 
-             client.addedBy, client.reminderDate || null, now, now]
+             client.addedBy, client.clientStatus || '', client.reminderDate || null, now, now]
         );
         
         console.log('Client created successfully with ID:', clientId);
@@ -525,11 +535,11 @@ app.put('/api/clients/:id', async (req, res) => {
         await query(
             `UPDATE clients SET 
             "fullName" = $1, nationality = $2, passport = $3, phone = $4, email = $5, 
-            address = $6, notes = $7, "reminderDate" = $8, "lastUpdated" = $9
-            WHERE id = $10`,
+            address = $6, notes = $7, "clientStatus" = $8, "reminderDate" = $9, "lastUpdated" = $10
+            WHERE id = $11`,
             [updates.fullName, updates.nationality, updates.passport, updates.phone,
              updates.email || '', updates.address || '', updates.notes || '', 
-             updates.reminderDate || null, now, clientId]
+             updates.clientStatus || '', updates.reminderDate || null, now, clientId]
         );
         
         // Update transactions if provided
