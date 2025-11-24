@@ -164,6 +164,15 @@ async function initializeUsers() {
 // Works with both GET and POST for easy browser access
 app.get('/api/setup-users', async (req, res) => {
     try {
+        // First, ensure users table exists
+        await query(`CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username VARCHAR(255) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            role VARCHAR(50) NOT NULL
+        )`);
+        
         const users = [
             { username: 'Diaa', password: 'Diaa123', name: 'ضياء', role: 'manager' },
             { username: 'Ahmed', password: 'Ahmed123', name: 'أحمد', role: 'staff' },
@@ -171,22 +180,35 @@ app.get('/api/setup-users', async (req, res) => {
         ];
         
         let created = 0;
+        const errors = [];
+        
         for (const user of users) {
             try {
-                await query(
+                const result = await query(
                     `INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password, name = EXCLUDED.name, role = EXCLUDED.role`,
                     [user.username, user.password, user.name, user.role]
                 );
                 created++;
+                console.log(`User ${user.username} created/updated successfully`);
             } catch (err) {
                 console.error(`Error creating user ${user.username}:`, err);
+                errors.push(`${user.username}: ${err.message}`);
             }
         }
         
-        res.json({ success: true, message: `Created/updated ${created} users` });
+        // Verify users
+        const verifyResult = await query('SELECT username, name, role FROM users');
+        
+        res.json({ 
+            success: true, 
+            message: `Created/updated ${created} users`,
+            totalUsers: verifyResult.rows.length,
+            users: verifyResult.rows,
+            errors: errors.length > 0 ? errors : undefined
+        });
     } catch (error) {
         console.error('Setup error:', error);
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({ error: 'Database error', details: error.message });
     }
 });
 
