@@ -357,6 +357,17 @@ const loadClientDetails = async (clientId) => {
             notesEl: !!notesEl
         });
         
+        console.log('Client data to display:', {
+            fullName: client.fullName,
+            nationality: client.nationality,
+            passport: client.passport,
+            phone: client.phone,
+            email: client.email,
+            address: client.address,
+            clientStatus: client.clientStatus,
+            notes: client.notes
+        });
+        
         if (fullNameEl) {
             fullNameEl.textContent = (client.fullName && client.fullName.trim()) || '-';
             console.log('Set fullName to:', fullNameEl.textContent);
@@ -381,8 +392,6 @@ const loadClientDetails = async (clientId) => {
             phoneEl.textContent = (client.phone && client.phone.trim()) || '-';
             console.log('Set phone to:', phoneEl.textContent);
         }
-        
-        const clientStatusEl = document.getElementById('clientStatus');
         if (clientStatusEl) {
             const getStatusColor = (status) => {
                 const colors = {

@@ -426,15 +426,29 @@ app.get('/api/clients/:id', async (req, res) => {
             phone: client.phone,
             email: client.email,
             address: client.address,
+            clientStatus: client.clientStatus,
             notes: client.notes
         });
+        
+        console.log('Full client object:', JSON.stringify(client, null, 2));
         
         const transactionsResult = await query('SELECT * FROM transactions WHERE "clientId" = $1', [clientId]);
         const filesResult = await query('SELECT * FROM files WHERE "clientId" = $1', [clientId]);
         
         const clientData = {
-            ...client,
+            id: client.id,
+            fullName: client.fullName,
+            nationality: client.nationality,
+            passport: client.passport,
+            phone: client.phone,
+            email: client.email,
+            address: client.address,
+            notes: client.notes,
+            addedBy: client.addedBy,
             clientStatus: client.clientStatus || '',
+            reminderDate: client.reminderDate,
+            createdAt: client.createdAt,
+            lastUpdated: client.lastUpdated,
             transactions: transactionsResult.rows.map(t => ({
                 id: t.id,
                 type: t.type,
@@ -458,6 +472,7 @@ app.get('/api/clients/:id', async (req, res) => {
             }))
         };
         
+        console.log('Sending client data:', JSON.stringify(clientData, null, 2));
         res.json(clientData);
     } catch (error) {
         console.error('Database error fetching client:', error);

@@ -126,9 +126,22 @@ const api = {
     },
     
     async getClient(id) {
-        const response = await fetch(`${API_BASE}/api/clients/${id}`);
-        if (!response.ok) throw new Error('Failed to fetch client');
-        return await response.json();
+        try {
+            console.log('Fetching client with ID:', id);
+            console.log('API URL:', `${API_BASE}/api/clients/${id}`);
+            const response = await fetch(`${API_BASE}/api/clients/${id}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Client API error:', response.status, errorText);
+                throw new Error(`Failed to fetch client: ${response.status} ${errorText}`);
+            }
+            const data = await response.json();
+            console.log('Client data received from API:', data);
+            return data;
+        } catch (error) {
+            console.error('Error in getClient:', error);
+            throw error;
+        }
     },
     
     async createClient(clientData) {
