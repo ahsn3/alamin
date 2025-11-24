@@ -108,12 +108,6 @@ const saveReminder = async (clientId) => {
         return false;
     }
 };
-    } catch (error) {
-        console.error('Error saving reminder:', error);
-        alert('حدث خطأ أثناء حفظ التذكير: ' + error.message);
-        return false;
-    }
-};
 
 const clearReminder = async (clientId) => {
     if (!confirm('هل أنت متأكد من حذف التذكير؟')) return;
