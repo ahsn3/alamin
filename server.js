@@ -5,6 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const server = http.createServer(app);
@@ -26,8 +27,6 @@ app.use(express.static(__dirname));
 // Initialize Database
 // Railway automatically persists files in the project directory
 // For better persistence, we'll use a dedicated data directory
-const path = require('path');
-const fs = require('fs');
 
 // Create data directory if it doesn't exist
 const dataDir = process.env.DATABASE_DIR || './data';
