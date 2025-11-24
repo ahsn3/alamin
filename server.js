@@ -158,6 +158,35 @@ async function initializeUsers() {
     });
 }
 
+// One-time setup endpoint to create users (call this once)
+app.post('/api/setup-users', async (req, res) => {
+    try {
+        const users = [
+            { username: 'Diaa', password: 'Diaa123', name: 'ضياء', role: 'manager' },
+            { username: 'Ahmed', password: 'Ahmed123', name: 'أحمد', role: 'staff' },
+            { username: 'Maram', password: 'Maram123', name: 'مرام', role: 'staff' }
+        ];
+        
+        let created = 0;
+        for (const user of users) {
+            try {
+                await query(
+                    `INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password, name = EXCLUDED.name, role = EXCLUDED.role`,
+                    [user.username, user.password, user.name, user.role]
+                );
+                created++;
+            } catch (err) {
+                console.error(`Error creating user ${user.username}:`, err);
+            }
+        }
+        
+        res.json({ success: true, message: `Created/updated ${created} users` });
+    } catch (error) {
+        console.error('Setup error:', error);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 // Authentication endpoint
 app.post('/api/login', async (req, res) => {
     try {
