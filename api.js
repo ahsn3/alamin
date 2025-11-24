@@ -169,13 +169,26 @@ const api = {
     },
     
     async createInsurance(insuranceData) {
-        const response = await fetch(`${API_BASE}/api/insurance`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(insuranceData)
-        });
-        if (!response.ok) throw new Error('Failed to create insurance');
-        return await response.json();
+        try {
+            console.log('Creating insurance company:', insuranceData);
+            console.log('API URL:', `${API_BASE}/api/insurance`);
+            const response = await fetch(`${API_BASE}/api/insurance`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(insuranceData)
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Create insurance API error:', response.status, errorText);
+                throw new Error(`Failed to create insurance: ${response.status} ${errorText}`);
+            }
+            const data = await response.json();
+            console.log('Insurance created successfully:', data);
+            return data;
+        } catch (error) {
+            console.error('Error in createInsurance:', error);
+            throw error;
+        }
     },
     
     async updateInsurance(id, insuranceData) {

@@ -268,21 +268,35 @@ const saveInsuranceCompany = async () => {
     }
     
     try {
+        console.log('Saving insurance company:', { companyId, name, phone, status, due, paid, currency });
+        
         if (companyId) {
             // Edit existing
-            await api.updateInsurance(parseInt(companyId), { name, phone, status, due, paid, currency });
+            console.log('Updating insurance company:', companyId);
+            const result = await api.updateInsurance(parseInt(companyId), { name, phone, status, due, paid, currency });
+            console.log('Update result:', result);
             alert('تم تحديث شركة التأمين بنجاح');
         } else {
             // Add new
-            await api.createInsurance({ name, phone, status, due, paid, currency });
+            console.log('Creating new insurance company');
+            const result = await api.createInsurance({ name, phone, status, due, paid, currency });
+            console.log('Create result:', result);
             alert('تم إضافة شركة التأمين بنجاح');
         }
         
         document.getElementById('insuranceModal').style.display = 'none';
+        
+        // Reload insurance companies
+        console.log('Reloading insurance companies...');
         await loadInsuranceCompanies();
     } catch (error) {
         console.error('Error saving insurance company:', error);
-        alert('حدث خطأ أثناء حفظ شركة التأمين: ' + error.message);
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        alert('حدث خطأ أثناء حفظ شركة التأمين: ' + (error.message || 'خطأ غير معروف'));
     }
 };
 

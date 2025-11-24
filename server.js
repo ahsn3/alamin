@@ -598,6 +598,12 @@ app.get('/api/insurance', async (req, res) => {
 app.post('/api/insurance', async (req, res) => {
     try {
         const { name, phone, status, due, paid, currency } = req.body;
+        console.log('Creating insurance company with data:', { name, phone, status, due, paid, currency });
+        
+        if (!name) {
+            return res.status(400).json({ error: 'Name is required' });
+        }
+        
         const now = new Date().toISOString();
         
         const result = await query(
@@ -607,11 +613,13 @@ app.post('/api/insurance', async (req, res) => {
         );
         
         const id = result.rows[0].id;
+        console.log('Insurance company created with ID:', id);
         io.emit('insuranceAdded', { id });
         res.json({ success: true, id });
     } catch (error) {
         console.error('Error creating insurance:', error);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error details:', error.message, error.stack);
+        res.status(500).json({ error: 'Database error', details: error.message });
     }
 });
 
