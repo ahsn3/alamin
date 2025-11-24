@@ -21,7 +21,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-app.use(express.static(__dirname));
+
+// API routes must come before static file serving
+// Static files will be served last
 
 // Initialize PostgreSQL Database
 // Railway automatically provides DATABASE_URL environment variable
@@ -159,6 +161,35 @@ async function initializeUsers() {
 }
 
 // One-time setup endpoint to create users (call this once)
+// Works with both GET and POST for easy browser access
+app.get('/api/setup-users', async (req, res) => {
+    try {
+        const users = [
+            { username: 'Diaa', password: 'Diaa123', name: 'ضياء', role: 'manager' },
+            { username: 'Ahmed', password: 'Ahmed123', name: 'أحمد', role: 'staff' },
+            { username: 'Maram', password: 'Maram123', name: 'مرام', role: 'staff' }
+        ];
+        
+        let created = 0;
+        for (const user of users) {
+            try {
+                await query(
+                    `INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) ON CONFLICT (username) DO UPDATE SET password = EXCLUDED.password, name = EXCLUDED.name, role = EXCLUDED.role`,
+                    [user.username, user.password, user.name, user.role]
+                );
+                created++;
+            } catch (err) {
+                console.error(`Error creating user ${user.username}:`, err);
+            }
+        }
+        
+        res.json({ success: true, message: `Created/updated ${created} users` });
+    } catch (error) {
+        console.error('Setup error:', error);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 app.post('/api/setup-users', async (req, res) => {
     try {
         const users = [
@@ -617,9 +648,15 @@ io.on('connection', (socket) => {
     });
 });
 
-// Serve static files
+// Serve static files (must be last, after all API routes)
+app.use(express.static(__dirname));
+
+// Fallback to index.html for SPA routes (but not for API routes)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, req.path === '/' ? 'index.html' : req.path));
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'Not found' });
+    }
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 server.listen(PORT, () => {
