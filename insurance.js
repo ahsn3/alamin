@@ -54,7 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const loadInsuranceCompanies = async () => {
     try {
+        console.log('Loading insurance companies...');
         const companies = await getInsuranceCompanies();
+        console.log('Insurance companies loaded:', companies);
         
         const trialCompanies = companies.filter(c => c.status === 'trial');
         const activeCompanies = companies.filter(c => c.status === 'active');
@@ -157,7 +159,12 @@ const loadInsuranceCompanies = async () => {
     }
     } catch (error) {
         console.error('Error loading insurance companies:', error);
-        alert('حدث خطأ في تحميل شركات التأمين');
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
+        alert('حدث خطأ في تحميل شركات التأمين: ' + (error.message || 'خطأ غير معروف'));
     }
 };
 

@@ -584,11 +584,14 @@ app.delete('/api/clients/:id', async (req, res) => {
 // Insurance Companies endpoints
 app.get('/api/insurance', async (req, res) => {
     try {
+        console.log('Fetching insurance companies...');
         const result = await query('SELECT * FROM insurance_companies ORDER BY "lastUpdated" DESC');
+        console.log(`Found ${result.rows.length} insurance companies`);
         res.json(result.rows);
     } catch (error) {
         console.error('Error fetching insurance:', error);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error details:', error.message, error.stack);
+        res.status(500).json({ error: 'Database error', details: error.message });
     }
 });
 

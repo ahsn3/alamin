@@ -151,9 +151,21 @@ const api = {
     
     // Insurance
     async getInsurance() {
-        const response = await fetch(`${API_BASE}/api/insurance`);
-        if (!response.ok) throw new Error('Failed to fetch insurance');
-        return await response.json();
+        try {
+            console.log('Fetching insurance from:', `${API_BASE}/api/insurance`);
+            const response = await fetch(`${API_BASE}/api/insurance`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Insurance API error:', response.status, errorText);
+                throw new Error(`Failed to fetch insurance: ${response.status} ${errorText}`);
+            }
+            const data = await response.json();
+            console.log('Insurance data received:', data);
+            return data;
+        } catch (error) {
+            console.error('Error in getInsurance:', error);
+            throw error;
+        }
     },
     
     async createInsurance(insuranceData) {
