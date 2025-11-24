@@ -24,11 +24,18 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(__dirname));
 
 // Initialize Database
-// Use persistent storage path on Railway, or local path for development
-const dbPath = process.env.DATABASE_PATH || process.env.RAILWAY_VOLUME_MOUNT_PATH 
-    ? `${process.env.RAILWAY_VOLUME_MOUNT_PATH}/alamin.db` 
-    : './alamin.db';
+// Railway automatically persists files in the project directory
+// For better persistence, we'll use a dedicated data directory
+const path = require('path');
+const fs = require('fs');
 
+// Create data directory if it doesn't exist
+const dataDir = process.env.DATABASE_DIR || './data';
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = path.join(dataDir, 'alamin.db');
 console.log('Database path:', dbPath);
 
 const db = new sqlite3.Database(dbPath, (err) => {
