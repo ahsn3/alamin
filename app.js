@@ -226,6 +226,12 @@ const updateClient = (clientId, updates) => {
 let insuranceCache = [];
 let insuranceCacheTime = 0;
 
+// Make cache accessible globally for socket events
+if (typeof window !== 'undefined') {
+    window.insuranceCache = insuranceCache;
+    window.insuranceCacheTime = insuranceCacheTime;
+}
+
 const getInsuranceCompanies = async () => {
     try {
         const now = Date.now();
@@ -234,6 +240,11 @@ const getInsuranceCompanies = async () => {
         }
         insuranceCache = await api.getInsurance();
         insuranceCacheTime = now;
+        // Update global cache reference
+        if (typeof window !== 'undefined') {
+            window.insuranceCache = insuranceCache;
+            window.insuranceCacheTime = insuranceCacheTime;
+        }
         return insuranceCache;
     } catch (error) {
         console.error('Error fetching insurance:', error);

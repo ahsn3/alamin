@@ -55,30 +55,45 @@ function initSocket() {
             }
         });
         
-        socket.on('insuranceAdded', (data) => {
+        socket.on('insuranceAdded', async (data) => {
             console.log('Insurance added:', data);
+            // Clear insurance cache to force reload
+            if (typeof window !== 'undefined' && window.insuranceCache) {
+                window.insuranceCache = [];
+                window.insuranceCacheTime = 0;
+            }
             if (typeof loadInsuranceCompanies === 'function') {
-                loadInsuranceCompanies();
+                await loadInsuranceCompanies();
             }
             if (typeof updateStatistics === 'function') {
-                updateStatistics();
+                await updateStatistics();
             }
         });
         
-        socket.on('insuranceUpdated', (data) => {
+        socket.on('insuranceUpdated', async (data) => {
             console.log('Insurance updated:', data);
+            // Clear insurance cache to force reload
+            if (typeof window !== 'undefined' && window.insuranceCache) {
+                window.insuranceCache = [];
+                window.insuranceCacheTime = 0;
+            }
             if (typeof loadInsuranceCompanies === 'function') {
-                loadInsuranceCompanies();
+                await loadInsuranceCompanies();
             }
         });
         
-        socket.on('insuranceDeleted', (data) => {
+        socket.on('insuranceDeleted', async (data) => {
             console.log('Insurance deleted:', data);
+            // Clear insurance cache to force reload
+            if (typeof window !== 'undefined' && window.insuranceCache) {
+                window.insuranceCache = [];
+                window.insuranceCacheTime = 0;
+            }
             if (typeof loadInsuranceCompanies === 'function') {
-                loadInsuranceCompanies();
+                await loadInsuranceCompanies();
             }
             if (typeof updateStatistics === 'function') {
-                updateStatistics();
+                await updateStatistics();
             }
         });
     }

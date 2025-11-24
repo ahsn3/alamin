@@ -69,15 +69,15 @@ const loadInsuranceCompanies = async () => {
             trialContainer.innerHTML = '<div class="insurance-card"><p>لا توجد شركات في هذه الفئة حالياً.</p></div>';
         } else {
             trialContainer.innerHTML = trialCompanies.map(company => {
-                const due = company.due || 0;
-                const paid = company.paid || 0;
+                const due = parseFloat(company.due) || 0;
+                const paid = parseFloat(company.paid) || 0;
                 const remaining = due - paid;
                 const currency = company.currency || 'USD';
                 return `
                 <div class="insurance-card">
                     <div>
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
-                        <p style="color: #666; font-size: 14px;">${company.phone}</p>
+                        <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
@@ -101,15 +101,15 @@ const loadInsuranceCompanies = async () => {
             activeContainer.innerHTML = '<div class="insurance-card"><p>لا توجد شركات في هذه الفئة حالياً.</p></div>';
         } else {
             activeContainer.innerHTML = activeCompanies.map(company => {
-                const due = company.due || 0;
-                const paid = company.paid || 0;
+                const due = parseFloat(company.due) || 0;
+                const paid = parseFloat(company.paid) || 0;
                 const remaining = due - paid;
                 const currency = company.currency || 'USD';
                 return `
                 <div class="insurance-card">
                     <div>
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
-                        <p style="color: #666; font-size: 14px;">${company.phone}</p>
+                        <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
@@ -133,15 +133,15 @@ const loadInsuranceCompanies = async () => {
             inactiveContainer.innerHTML = '<div class="insurance-card"><p>لا توجد شركات في هذه الفئة حالياً.</p></div>';
         } else {
             inactiveContainer.innerHTML = inactiveCompanies.map(company => {
-                const due = company.due || 0;
-                const paid = company.paid || 0;
+                const due = parseFloat(company.due) || 0;
+                const paid = parseFloat(company.paid) || 0;
                 const remaining = due - paid;
                 const currency = company.currency || 'USD';
                 return `
                 <div class="insurance-card">
                     <div>
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
-                        <p style="color: #666; font-size: 14px;">${company.phone}</p>
+                        <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
                             <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
@@ -184,8 +184,8 @@ const openInsuranceModal = async (companyId = null) => {
                 document.getElementById('insuranceName').value = company.name;
                 document.getElementById('insurancePhone').value = company.phone || '';
                 document.getElementById('insuranceStatus').value = company.status;
-                document.getElementById('insuranceDue').value = company.due || 0;
-                document.getElementById('insurancePaid').value = company.paid || 0;
+                document.getElementById('insuranceDue').value = parseFloat(company.due) || 0;
+                document.getElementById('insurancePaid').value = parseFloat(company.paid) || 0;
                 document.getElementById('insuranceCurrency').value = company.currency || 'USD';
                 updateInsuranceRemaining();
             }
