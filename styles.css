@@ -1532,6 +1532,17 @@ input[type="file"]::file-selector-button:hover {
         padding-top: 110px; /* Space for mobile navbar + title */
     }
     
+    /* Make delete button text black on mobile */
+    .btn-danger,
+    button.btn-danger {
+        color: #000 !important;
+        background: #e74c3c;
+    }
+    
+    .btn-danger:hover {
+        color: #000 !important;
+    }
+    
     .login-card {
         padding: 25px 20px;
         max-height: 95vh;

@@ -347,20 +347,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    // Export Data functionality (backup only)
-    const exportDataBtn = document.getElementById('exportDataBtn');
-    
-    if (exportDataBtn) {
-        exportDataBtn.addEventListener('click', async () => {
-            try {
-                const data = await api.exportData();
-                alert(`تم تصدير البيانات بنجاح!\n\n- ${data.clients.length} عميل\n- ${data.insuranceCompanies.length} شركة تأمين\n\nتم حفظ الملف للنسخ الاحتياطي.`);
-            } catch (error) {
-                console.error('Error exporting data:', error);
-                alert('حدث خطأ أثناء تصدير البيانات: ' + error.message);
-            }
-        });
-    }
+    // Export Data functionality (backup only) - Removed from dashboard, kept in code for potential future use
+    // const exportDataBtn = document.getElementById('exportDataBtn');
+    // if (exportDataBtn) {
+    //     exportDataBtn.addEventListener('click', async () => {
+    //         try {
+    //             const data = await api.exportData();
+    //             alert(`تم تصدير البيانات بنجاح!\n\n- ${data.clients.length} عميل\n- ${data.insuranceCompanies.length} شركة تأمين\n\nتم حفظ الملف للنسخ الاحتياطي.`);
+    //         } catch (error) {
+    //             console.error('Error exporting data:', error);
+    //             alert('حدث خطأ أثناء تصدير البيانات: ' + error.message);
+    //         }
+    //     });
+    // }
 });
 
 // Export function is now handled by API in the event listener above
