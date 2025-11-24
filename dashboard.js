@@ -81,7 +81,7 @@ const loadLatestClients = async () => {
         
         // Helper function to format reminder date
         const formatReminderDate = (reminderDate) => {
-            if (!reminderDate) return 'لا يوجد موعد';
+            if (!reminderDate) return 'لا يوجد تذكير';
             try {
                 const date = new Date(reminderDate);
                 const day = String(date.getDate()).padStart(2, '0');
@@ -93,7 +93,7 @@ const loadLatestClients = async () => {
                 const displayHours = hours % 12 || 12;
                 return `${day}/${month}/${year} ${displayHours}:${minutes} ${ampm}`;
             } catch (e) {
-                return 'لا يوجد موعد';
+                return 'لا يوجد تذكير';
             }
         };
         
