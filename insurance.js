@@ -52,6 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Helper function to format numbers with commas
+const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return '0.00';
+    return parseFloat(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+};
+
 const loadInsuranceCompanies = async () => {
     try {
         console.log('Loading insurance companies...');
@@ -79,9 +88,9 @@ const loadInsuranceCompanies = async () => {
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
                         <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${remaining.toFixed(2)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${formatNumber(due)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${formatNumber(paid)}</strong></p>
+                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${formatNumber(remaining)}</strong></p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 5px;">
@@ -111,9 +120,9 @@ const loadInsuranceCompanies = async () => {
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
                         <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${remaining.toFixed(2)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${formatNumber(due)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${formatNumber(paid)}</strong></p>
+                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${formatNumber(remaining)}</strong></p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 5px;">
@@ -143,9 +152,9 @@ const loadInsuranceCompanies = async () => {
                         <p style="font-weight: 600; margin-bottom: 5px;">${company.name}</p>
                         <p style="color: #666; font-size: 14px;">${company.phone || '-'}</p>
                         <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #e8e8e8;">
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${due.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${paid.toFixed(2)}</strong></p>
-                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${remaining.toFixed(2)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المستحق: <strong>${currency} ${formatNumber(due)}</strong></p>
+                            <p style="font-size: 12px; color: #666; margin: 3px 0;">المدفوع: <strong>${currency} ${formatNumber(paid)}</strong></p>
+                            <p style="font-size: 12px; color: ${remaining > 0 ? '#e74c3c' : '#27ae60'}; margin: 3px 0;">الباقي: <strong>${currency} ${formatNumber(remaining)}</strong></p>
                         </div>
                     </div>
                     <div style="display: flex; gap: 5px;">
@@ -224,7 +233,7 @@ const updateInsuranceRemaining = () => {
     const currency = currencySelect.value;
     const remaining = due - paid;
     
-    remainingValueEl.textContent = remaining.toFixed(2);
+    remainingValueEl.textContent = formatNumber(remaining);
     remainingCurrencyEl.textContent = currency;
     
     if (remaining > 0) {

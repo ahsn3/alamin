@@ -448,6 +448,15 @@ const loadClientDetails = async (clientId) => {
     }
 };
 
+// Helper function to format numbers with commas
+const formatNumber = (num) => {
+    if (num === null || num === undefined || isNaN(num)) return '0.00';
+    return parseFloat(num).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+};
+
 const loadTransactions = (client) => {
     const transactionsList = document.getElementById('transactionsList');
     if (!transactionsList) return;
@@ -478,7 +487,7 @@ const loadTransactions = (client) => {
                     <div class="financial-item" id="due_view_${client.id}_${transaction.id}">
                         <label>المستحق:</label>
                         <div>
-                            <span class="amount">${transaction.financial.currency} ${transaction.financial.due.toFixed(2)}</span>
+                            <span class="amount">${transaction.financial.currency} ${formatNumber(transaction.financial.due)}</span>
                             <button class="btn btn-secondary" style="padding: 5px 10px; margin-right: 10px;" onclick="showEditFinancial('due', ${client.id}, ${transaction.id})">تعديل</button>
                         </div>
                     </div>
@@ -514,7 +523,7 @@ const loadTransactions = (client) => {
                     <div class="financial-item" id="paid_view_${client.id}_${transaction.id}">
                         <label>المدفوع:</label>
                         <div>
-                            <span class="amount">${transaction.financial.currency} ${transaction.financial.paid.toFixed(2)}</span>
+                            <span class="amount">${transaction.financial.currency} ${formatNumber(transaction.financial.paid)}</span>
                             <button class="btn btn-secondary" style="padding: 5px 10px; margin-right: 10px;" onclick="showEditFinancial('paid', ${client.id}, ${transaction.id})">تعديل</button>
                         </div>
                     </div>
@@ -549,7 +558,7 @@ const loadTransactions = (client) => {
                     </div>
                     <div class="financial-item">
                         <label>المتبقي:</label>
-                        <span class="amount remaining">${transaction.financial.currency} ${remaining.toFixed(2)}</span>
+                        <span class="amount remaining">${transaction.financial.currency} ${formatNumber(remaining)}</span>
                     </div>
                 </div>
             </div>
