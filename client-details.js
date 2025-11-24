@@ -412,8 +412,25 @@ const loadClientDetails = async (clientId) => {
         }
         
         if (notesEl) {
-            notesEl.textContent = (client.notes && client.notes.trim()) || '-';
-            console.log('Set notes to:', notesEl.textContent);
+            const notesText = (client.notes && client.notes.trim()) || '-';
+            notesEl.textContent = notesText;
+            notesEl.style.display = notesText === '-' ? 'none' : 'block';
+            console.log('Set notes to:', notesText);
+        }
+        
+        // Also show/hide the separate notes card if it exists
+        const notesCard = document.getElementById('notesCard');
+        if (notesCard) {
+            const notesText = (client.notes && client.notes.trim()) || '';
+            if (notesText) {
+                notesCard.style.display = 'block';
+                const notesCardContent = document.getElementById('clientNotes');
+                if (notesCardContent && notesCardContent !== notesEl) {
+                    notesCardContent.textContent = notesText;
+                }
+            } else {
+                notesCard.style.display = 'none';
+            }
         }
         
         // Load transactions
