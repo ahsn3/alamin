@@ -43,7 +43,7 @@ body {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border-radius: 24px;
-    padding: 50px 40px;
+    padding: 30px 25px;
     width: 100%;
     max-width: 480px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -64,15 +64,15 @@ body {
 
 .logo-container {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
 }
 
 .logo-image {
-    width: 140px;
-    height: 140px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 20px;
+    margin: 0 auto 15px;
     box-shadow: 0 10px 30px rgba(32, 116, 181, 0.3);
     border: 4px solid rgba(255, 255, 255, 0.8);
     transition: transform 0.3s ease;
@@ -84,8 +84,8 @@ body {
 
 .company-name {
     color: #2074b5;
-    font-size: 28px;
-    margin: 15px 0 8px;
+    font-size: 24px;
+    margin: 10px 0 5px;
     font-weight: 700;
     letter-spacing: 1px;
 }
@@ -98,16 +98,16 @@ body {
 
 .platform-title {
     color: #2074b5;
-    font-size: 30px;
+    font-size: 22px;
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 20px;
     font-weight: 700;
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 18px;
 }
 
 .form-group {
@@ -1066,7 +1066,7 @@ input[type="file"]::file-selector-button:hover {
     left: 0;
     background: #2074b5;
     color: white;
-    padding: 15px 20px;
+    padding: 12px 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     z-index: 1000;
 }
@@ -1085,10 +1085,11 @@ input[type="file"]::file-selector-button:hover {
 }
 
 .mobile-navbar-logo img {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
 }
 
 .mobile-navbar-logo h3 {
@@ -1164,7 +1165,7 @@ input[type="file"]::file-selector-button:hover {
         margin-right: 0;
         padding: 20px 15px;
         width: 100%;
-        margin-top: 80px; /* Space for mobile navbar */
+        padding-top: 120px; /* Space for mobile navbar + title */
     }
     
     .content-header {
@@ -1480,7 +1481,33 @@ input[type="file"]::file-selector-button:hover {
     }
     
     .main-content {
-        margin-top: 70px;
+        padding-top: 110px; /* Space for mobile navbar + title */
+    }
+    
+    .login-card {
+        padding: 25px 20px;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+    
+    .logo-image {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+    
+    .company-name {
+        font-size: 20px;
+        margin: 8px 0 4px;
+    }
+    
+    .platform-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+    
+    .login-form {
+        gap: 15px;
     }
     
     .form-input,
