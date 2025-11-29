@@ -68,11 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
             // Validate required fields
             const fullName = document.getElementById('fullName').value.trim();
             const nationality = document.getElementById('nationality').value.trim();
-            const passport = document.getElementById('passport').value.trim();
             const phone = document.getElementById('phone').value.trim();
             
-            if (!fullName || !nationality || !passport || !phone) {
-                alert('يرجى ملء جميع الحقول المطلوبة (الاسم الكامل، الجنسية، رقم الجواز، الهاتف)');
+            if (!fullName || !nationality || !phone) {
+                alert('يرجى ملء جميع الحقول المطلوبة (الاسم الكامل، الجنسية، الهاتف)');
                 return false;
             }
             
@@ -248,8 +247,8 @@ const saveClient = async (clientId) => {
     };
     
     // Validate required fields
-    if (!clientData.fullName || !clientData.nationality || !clientData.passport || !clientData.phone) {
-        alert('يرجى ملء جميع الحقول المطلوبة (الاسم الكامل، الجنسية، رقم الجواز، الهاتف)');
+    if (!clientData.fullName || !clientData.nationality || !clientData.phone) {
+        alert('يرجى ملء جميع الحقول المطلوبة (الاسم الكامل، الجنسية، الهاتف)');
         return;
     }
     
