@@ -583,14 +583,44 @@ app.put('/api/clients/:id', async (req, res) => {
         if (updates.transactions) {
             await query('DELETE FROM transactions WHERE "clientId" = $1', [clientId]);
             for (const transaction of updates.transactions) {
-                await query(
-                    `INSERT INTO transactions (id, "clientId", type, status, notes, "appointmentDate", due, paid, currency, "createdAt")
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-                    [transaction.id, clientId, transaction.type, transaction.status, 
-                     transaction.notes || '', transaction.appointmentDate || '',
-                     transaction.financial?.due || 0, transaction.financial?.paid || 0,
-                     transaction.financial?.currency || 'USD', transaction.createdAt || now]
-                );
+                // Use transaction ID if it's a reasonable integer, otherwise let database auto-generate
+                // Date.now() produces BIGINT values that overflow SERIAL (INTEGER), so we use a smaller ID
+                const transactionId = transaction.id && transaction.id < 2147483647 ? transaction.id : null;
+                
+                if (transactionId) {
+                    // Try to insert with the provided ID
+                    try {
+                        await query(
+                            `INSERT INTO transactions (id, "clientId", type, status, notes, "appointmentDate", due, paid, currency, "createdAt")
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+                            [transactionId, clientId, transaction.type, transaction.status, 
+                             transaction.notes || '', transaction.appointmentDate || '',
+                             transaction.financial?.due || 0, transaction.financial?.paid || 0,
+                             transaction.financial?.currency || 'USD', transaction.createdAt || now]
+                        );
+                    } catch (idError) {
+                        // If ID insertion fails (e.g., ID already exists or too large), let DB auto-generate
+                        console.warn('Failed to insert transaction with ID, using auto-generated:', idError.message);
+                        await query(
+                            `INSERT INTO transactions ("clientId", type, status, notes, "appointmentDate", due, paid, currency, "createdAt")
+                            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                            [clientId, transaction.type, transaction.status, 
+                             transaction.notes || '', transaction.appointmentDate || '',
+                             transaction.financial?.due || 0, transaction.financial?.paid || 0,
+                             transaction.financial?.currency || 'USD', transaction.createdAt || now]
+                        );
+                    }
+                } else {
+                    // Let database auto-generate the ID
+                    await query(
+                        `INSERT INTO transactions ("clientId", type, status, notes, "appointmentDate", due, paid, currency, "createdAt")
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+                        [clientId, transaction.type, transaction.status, 
+                         transaction.notes || '', transaction.appointmentDate || '',
+                         transaction.financial?.due || 0, transaction.financial?.paid || 0,
+                         transaction.financial?.currency || 'USD', transaction.createdAt || now]
+                    );
+                }
             }
         }
         

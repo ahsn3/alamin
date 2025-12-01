@@ -652,8 +652,12 @@ const saveTransactionFromModal = async (clientId) => {
         
         if (!client.transactions) client.transactions = [];
         
+        // Generate a smaller ID that fits in INTEGER (max 2147483647)
+        // Use timestamp modulo to keep it small, or use a counter-based approach
+        const transactionId = Math.floor(Date.now() / 1000) % 2147483647;
+        
         const newTransaction = {
-            id: Date.now(),
+            id: transactionId,
             type: transactionType,
             status: transactionStatus,
             notes: transactionNotes || '',

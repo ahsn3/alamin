@@ -165,7 +165,11 @@ const api = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
         });
-        if (!response.ok) throw new Error('Failed to update client');
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            const errorMessage = errorData.error || `HTTP ${response.status}: Failed to update client`;
+            throw new Error(errorMessage);
+        }
         return await response.json();
     },
     
