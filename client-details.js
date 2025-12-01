@@ -668,8 +668,8 @@ const saveTransactionFromModal = async (clientId) => {
         
         client.transactions.push(newTransaction);
         
-        // Update via API - explicitly include all required fields
-        await api.updateClient(clientId, {
+        // Prepare update data - explicitly include all required fields
+        const updateData = {
             fullName: client.fullName || '',
             nationality: client.nationality || '',
             passport: client.passport || '',
@@ -681,7 +681,24 @@ const saveTransactionFromModal = async (clientId) => {
             reminderDate: client.reminderDate || null,
             transactions: client.transactions,
             files: client.files || []
-        });
+        };
+        
+        // Validate required fields before sending
+        if (!updateData.fullName || !updateData.nationality || !updateData.phone) {
+            console.error('Missing required fields in client data:', {
+                fullName: updateData.fullName,
+                nationality: updateData.nationality,
+                phone: updateData.phone,
+                client: client
+            });
+            alert('خطأ: بيانات العميل غير مكتملة. يرجى التحقق من الاسم والجنسية ورقم الهاتف.');
+            return;
+        }
+        
+        console.log('Updating client with data:', updateData);
+        
+        // Update via API
+        await api.updateClient(clientId, updateData);
         
         // Close modal
         const transactionModal = document.getElementById('transactionModal');

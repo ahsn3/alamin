@@ -543,9 +543,31 @@ app.post('/api/clients', async (req, res) => {
 // Update client
 app.put('/api/clients/:id', async (req, res) => {
     try {
-        const clientId = req.params.id;
+        const clientId = parseInt(req.params.id);
+        if (isNaN(clientId)) {
+            return res.status(400).json({ error: 'Invalid client ID' });
+        }
+        
         const updates = req.body;
         const now = new Date().toISOString();
+        
+        // Validate required fields
+        if (!updates.fullName || !updates.nationality || !updates.phone) {
+            console.error('Missing required fields:', {
+                fullName: !!updates.fullName,
+                nationality: !!updates.nationality,
+                phone: !!updates.phone,
+                updates: updates
+            });
+            return res.status(400).json({ error: 'Missing required fields: fullName, nationality, or phone' });
+        }
+        
+        console.log('Updating client:', clientId, 'with data:', {
+            fullName: updates.fullName,
+            nationality: updates.nationality,
+            passport: updates.passport || '(empty)',
+            phone: updates.phone
+        });
         
         await query(
             `UPDATE clients SET 
@@ -588,7 +610,13 @@ app.put('/api/clients/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error updating client:', error);
-        res.status(500).json({ error: 'Database error' });
+        console.error('Error details:', {
+            message: error.message,
+            stack: error.stack,
+            clientId: req.params.id,
+            updates: req.body
+        });
+        res.status(500).json({ error: error.message || 'Database error' });
     }
 });
 
