@@ -552,7 +552,7 @@ app.put('/api/clients/:id', async (req, res) => {
             "fullName" = $1, nationality = $2, passport = $3, phone = $4, email = $5, 
             address = $6, notes = $7, "clientStatus" = $8, "reminderDate" = $9, "lastUpdated" = $10
             WHERE id = $11`,
-            [updates.fullName, updates.nationality, updates.passport, updates.phone,
+            [updates.fullName, updates.nationality, updates.passport || '', updates.phone,
              updates.email || '', updates.address || '', updates.notes || '', 
              updates.clientStatus || '', updates.reminderDate || null, now, clientId]
         );

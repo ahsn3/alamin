@@ -85,10 +85,19 @@ const saveReminder = async (clientId) => {
         const reminderDateISO = reminderDate.toISOString();
         console.log('ISO date:', reminderDateISO);
         
-        // Update client via API
+        // Update client via API - explicitly include all required fields
         await api.updateClient(clientId, {
-            ...client,
-            reminderDate: reminderDateISO
+            fullName: client.fullName || '',
+            nationality: client.nationality || '',
+            passport: client.passport || '',
+            phone: client.phone || '',
+            email: client.email || '',
+            address: client.address || '',
+            notes: client.notes || '',
+            clientStatus: client.clientStatus || '',
+            reminderDate: reminderDateISO,
+            transactions: client.transactions || [],
+            files: client.files || []
         });
         
         // Reload client to get updated data
@@ -121,10 +130,19 @@ const clearReminder = async (clientId) => {
             return;
         }
         
-        // Update client via API
+        // Update client via API - explicitly include all required fields
         await api.updateClient(clientId, {
-            ...client,
-            reminderDate: null
+            fullName: client.fullName || '',
+            nationality: client.nationality || '',
+            passport: client.passport || '',
+            phone: client.phone || '',
+            email: client.email || '',
+            address: client.address || '',
+            notes: client.notes || '',
+            clientStatus: client.clientStatus || '',
+            reminderDate: null,
+            transactions: client.transactions || [],
+            files: client.files || []
         });
         
         // Reload client details
@@ -650,10 +668,19 @@ const saveTransactionFromModal = async (clientId) => {
         
         client.transactions.push(newTransaction);
         
-        // Update via API
+        // Update via API - explicitly include all required fields
         await api.updateClient(clientId, {
-            ...client,
-            transactions: client.transactions
+            fullName: client.fullName || '',
+            nationality: client.nationality || '',
+            passport: client.passport || '',
+            phone: client.phone || '',
+            email: client.email || '',
+            address: client.address || '',
+            notes: client.notes || '',
+            clientStatus: client.clientStatus || '',
+            reminderDate: client.reminderDate || null,
+            transactions: client.transactions,
+            files: client.files || []
         });
         
         // Close modal
@@ -735,10 +762,19 @@ const saveEditTransaction = async (clientId) => {
             notes: transactionNotes
         };
         
-        // Update client via API
+        // Update client via API - explicitly include all required fields
         await api.updateClient(clientId, {
-            ...client,
-            transactions: client.transactions
+            fullName: client.fullName || '',
+            nationality: client.nationality || '',
+            passport: client.passport || '',
+            phone: client.phone || '',
+            email: client.email || '',
+            address: client.address || '',
+            notes: client.notes || '',
+            clientStatus: client.clientStatus || '',
+            reminderDate: client.reminderDate || null,
+            transactions: client.transactions,
+            files: client.files || []
         });
         
         // Close modal
@@ -842,10 +878,19 @@ window.saveFinancial = async (type, clientId, transactionId) => {
                 otherCurrencySelect.value = newCurrency;
             }
             
-            // Update via API
+            // Update via API - explicitly include all required fields
             await api.updateClient(clientId, {
-                ...client,
-                transactions: client.transactions
+                fullName: client.fullName || '',
+                nationality: client.nationality || '',
+                passport: client.passport || '',
+                phone: client.phone || '',
+                email: client.email || '',
+                address: client.address || '',
+                notes: client.notes || '',
+                clientStatus: client.clientStatus || '',
+                reminderDate: client.reminderDate || null,
+                transactions: client.transactions,
+                files: client.files || []
             });
             
             await loadClientDetails(clientId);
@@ -927,14 +972,21 @@ const handleFileUpload = async (event, clientId) => {
                         
                         console.log('All files to save:', allFiles.length);
                         
-                        // Update client via API
+                        // Update client via API - explicitly include all required fields
                         (async () => {
                             try {
                                 await api.updateClient(clientId, {
-                                    ...client, // Preserve all existing fields
-                                    files: allFiles,
+                                    fullName: client.fullName || '',
+                                    nationality: client.nationality || '',
+                                    passport: client.passport || '',
+                                    phone: client.phone || '',
+                                    email: client.email || '',
+                                    address: client.address || '',
+                                    notes: client.notes || '',
+                                    clientStatus: client.clientStatus || '',
+                                    reminderDate: existingReminderDate,
                                     transactions: existingTransactions,
-                                    reminderDate: existingReminderDate
+                                    files: allFiles
                                 });
                                 
                                 console.log('Files saved successfully');
